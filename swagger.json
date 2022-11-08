@@ -1,0 +1,28 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "API documentation for Hobby Ob project",
+    "version": "1.0.0",
+    "title": "Swagger Hobby Ob",
+    "contact": {
+      "email": "zulfikarrosadi@gmail.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host": "http://localhost:3000",
+  "basePath": "/api",
+  "tags": [
+    {
+      "name": "User",
+      "description": "Everything about user"
+    },
+    {
+      "name": "Hobby",
+      "description": "Access to all hobby"
+    }
+  ],
+  "schemes": ["http"]
+}
