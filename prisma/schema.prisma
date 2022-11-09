@@ -15,16 +15,35 @@ model User {
   email    String @unique
   password String
 
-  Post Post[]
   @@map("users")
 }
 
-model Post {
-  id      Int     @id @default(autoincrement())
-  title   String
-  content String?
-  userId  Int
+model UserProfile {
+  id          Int     @id @default(autoincrement())
+  username    String  @unique
+  fullName    String
+  bio         String? @db.Text
+  userHobbyId Int?
 
-  user User @relation(references: [id], onDelete: Cascade, fields: [userId])
-  @@map("posts")
+  UserHobby UserHobby? @relation(fields: [userHobbyId], references: [id])
+  @@map("user_profile")
+}
+
+model Hobby {
+  id          Int    @id @default(autoincrement())
+  name        String
+  userHobbyId Int?
+
+  UserHobby UserHobby? @relation(fields: [userHobbyId], references: [id])
+  @@map("hobbies")
+}
+
+model UserHobby {
+  id      Int @id @default(autoincrement())
+  userId  Int
+  hobbyId Int
+
+  userProfile UserProfile[]
+  hobby       Hobby[]
+  @@map("user_hobbies")
 }
