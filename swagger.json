@@ -5,6 +5,7 @@
     "version": "1.0.0",
     "title": "Swagger Hobby Ob",
     "contact": {
+      "name": "API Support",
       "email": "zulfikarrosadi@gmail.com"
     },
     "license": {
@@ -12,17 +13,370 @@
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     }
   },
-  "host": "http://localhost:3000",
+  "host": "localhost:3000",
   "basePath": "/api",
   "tags": [
     {
       "name": "User",
-      "description": "Everything about user"
+      "description": "Managing user session"
     },
     {
       "name": "Hobby",
-      "description": "Access to all hobby"
+      "description": "Access to all hobby features"
     }
   ],
-  "schemes": ["http"]
+  "schemes": ["http"],
+  "paths": {
+    "/api/register": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Registering new user",
+        "description": "",
+        "operationId": "",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User object that should be added",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RegistrationInput"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successfull action",
+            "schema": {
+              "$ref": "#/definitions/UserSuccess"
+            }
+          },
+          "400": {
+            "description": "your input is invalid",
+            "schema": {
+              "$ref": "#/definitions/UserFailed"
+            }
+          }
+        }
+      }
+    },
+    "/api/login": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Login the user",
+        "description": "",
+        "operationId": "",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User object that should be added",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LoginInput"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successfull action",
+            "schema": {
+              "$ref": "#/definitions/UserSuccess"
+            }
+          },
+          "400": {
+            "description": "your input is invalid",
+            "schema": {
+              "$ref": "#/definitions/UserFailed"
+            }
+          }
+        }
+      }
+    },
+    "/api/logout": {
+      "delete": {
+        "tags": ["User"],
+        "summary": "End user session",
+        "description": "",
+        "operationId": "",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "logout successfull",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "logout failed",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/user/profile": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Create user profile",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User profile object that should be added",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserProfile"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successfull action",
+            "schema": {
+              "$ref": "#/definitions/SuccessOperation"
+            }
+          }
+        }
+      }
+    },
+    "/api/user/{userId}/profile": {
+      "patch": {
+        "tags": ["User"],
+        "summary": "Update specific user profile",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "description": "User ID that want to be update",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "description": "User object to update the user profile",
+            "required": true,
+            "type": "object",
+            "schema": {
+              "$ref": "#/definitions/UserProfile"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successfull action",
+            "schema": {
+              "$ref": "#/definitions/UserProfile"
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["User"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "description": "User ID that want to be update",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User found",
+            "schema": {
+              "$ref": "#/definitions/UserProfile"
+            }
+          }
+        }
+      }
+    },
+    "/api/hobbies": {
+      "get": {
+        "tags": ["Hobby"],
+        "consumes": [],
+        "produces": ["application/json"],
+        "responses": {
+          "201": {
+            "description": "Get all available hobby",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "hobby": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/hobbies/{hobbyName}": {
+      "get": {
+        "tags": ["Hobby"],
+        "consumes": [],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "hobbyName",
+            "required": true,
+            "description": "Get the specific hobby details",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hobby found,",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "hobby": {
+                  "type": "string"
+                },
+                "users": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "username": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Hobby not found,",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "UserSuccess": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "accessToken": {
+          "type": "string"
+        }
+      }
+    },
+    "UserFailed": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        }
+      }
+    },
+    "UserProfile": {
+      "type": "object",
+      "properties": {
+        "fullname": {
+          "type": "string"
+        },
+        "bio": {
+          "type": "string"
+        },
+        "hobby": {
+          "type": "string"
+        }
+      }
+    },
+    "RegistrationInput": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string",
+          "format": "password"
+        },
+        "passwordConfirmation": {
+          "type": "string",
+          "format": "password",
+          "description": "value is should be the same as password"
+        }
+      }
+    },
+    "LoginInput": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string",
+          "format": "password"
+        }
+      }
+    },
+    "SuccessOperation": {
+      "type": "object",
+      "properties": {
+        "nessage": {
+          "type": "string"
+        }
+      }
+    }
+  }
 }
