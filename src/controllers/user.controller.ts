@@ -55,11 +55,27 @@ export async function createUserHandler(
   }
 }
 
-export async function getUserHandler(req: Request, res: Response) {
+export async function createUserProfileHandler(
+  req: Request<{}, {}, Required<TCreateUserProfileIntput['body']>>,
+  res: Response<{}, { user: { userId: number; email: string } }>,
+) {
   try {
-    return res.status(200).json({ user: res.locals.user });
+    const result = await createUserProfile({
+      userId: res.locals.user.userId,
+      ...req.body,
+    });
+
+    return res.status(201).json({
+      username: result.username,
+      message: 'successfully create user profile',
+    });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: 'error when getting the user' });
+    let e: RequestError;
+
+    if (error instanceof PrismaClientKnownRequestError) {
+      e = new RequestError(error.code, error.meta);
+    }
+
+    return res.status(e.code).json({ message: e.message });
   }
 }
