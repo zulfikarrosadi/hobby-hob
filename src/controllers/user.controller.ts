@@ -18,23 +18,36 @@ export async function createUserHandler(
     Omit<
       Required<TCreateUserInput['body']>,
       'password' | 'passwordConfirmation'
-    > & { accessToken: string; userId: number }
+    > & { username: string; userId: number; userProfileId: number }
   >,
 ) {
   const { email, password } = req.body;
   try {
     const hashedPassword = await hashPassword(password);
-    const user = await createUser({ email, password: hashedPassword });
-    const token = createSession({ email: user.email, userId: user.id });
+    const user = await createUser({
+      email,
+      password: hashedPassword,
+      username: generateUsername(),
+    });
+    const token = createSession({
+      email: user.email,
+      userId: user.id,
+      userProfileId: user.UserProfile[0].id,
+    });
 
     res.cookie('refreshToken', token.get('refreshToken'), {
+      httpOnly: true,
+      sameSite: 'lax',
+    });
+    res.cookie('accessToken', token.get('accessToken'), {
       httpOnly: true,
       sameSite: 'lax',
     });
     return res.status(201).json({
       email: user.email,
       userId: user.id,
-      accessToken: token.get('accessToken'),
+      userProfileId: user.UserProfile[0].id,
+      username: user.UserProfile[0].username,
     });
   } catch (error) {
     console.log(error);
