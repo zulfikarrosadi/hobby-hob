@@ -1,8 +1,14 @@
 import { Request, Response } from 'express';
-import { TCreateUserInput } from '../schemas/user.schema';
-import { createUser } from '../services/user.service';
+import {
+  TCreateUserInput,
+  TCreateUserProfileIntput,
+} from '../schemas/user.schema';
+import { createUser, createUserProfile } from '../services/user.service';
 import createSession from '../utils/sessionUtil';
 import hashPassword from '../utils/hashPassword';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import { RequestError } from '../utils/error';
+import { generateUsername } from '../utils/generateUsername';
 
 export async function createUserHandler(
   req: Request<{}, {}, Required<TCreateUserInput['body']>> & {
