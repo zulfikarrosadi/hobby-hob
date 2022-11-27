@@ -2,8 +2,8 @@ export default {
   port: process.env.PORT || 3000,
   endpoint: process.env.ENDPOINT || 'http://localhost:3000/',
   salt: 10, // based on bcrypt docs
-  accessTokenTtl: 1000 * 60 * 15, // 15 minutes in milliseconds
-  refreshTokenTtl: 1000 * 60 * 60 * 24 * 30, // 30 days in milliseconds
+  accessTokenTtl: 900000, // 15 minutes in milliseconds
+  refreshTokenTtl: 2592000000, // 30 days in milliseconds
   publicKey: `-----BEGIN PUBLIC KEY-----
 MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCpuOKtZljrgfpBqKus/DtXEx6Q
 nULEc7ZTtEWcecSq202ZkqsZfJfpN1a/bNXGyvMbMfbKuLM9hwBIw/s3O4vxSbKJ
