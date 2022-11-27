@@ -15,26 +15,27 @@ model User {
   email    String @unique
   password String
 
+  UserProfile UserProfile[]
   @@map("users")
 }
 
 model UserProfile {
-  id          Int     @id @default(autoincrement())
-  username    String  @unique
-  fullName    String
-  bio         String? @db.Text
-  userHobbyId Int?
+  id       Int     @id @default(autoincrement())
+  username String  @unique
+  fullName String?
+  bio      String? @db.Text
+  userId   Int     @unique
 
-  UserHobby UserHobby? @relation(fields: [userHobbyId], references: [id])
+  UserHobby UserHobby[]
+  UserId    User        @relation(references: [id], fields: [userId])
   @@map("user_profile")
 }
 
 model Hobby {
-  id          Int    @id @default(autoincrement())
-  name        String
-  userHobbyId Int?
+  id   Int    @id @default(autoincrement())
+  name String @unique
 
-  UserHobby UserHobby? @relation(fields: [userHobbyId], references: [id])
+  UserHobby UserHobby[]
   @@map("hobbies")
 }
 
@@ -43,7 +44,7 @@ model UserHobby {
   userId  Int
   hobbyId Int
 
-  userProfile UserProfile[]
-  hobby       Hobby[]
+  user  UserProfile @relation(fields: [userId], references: [id])
+  hobby Hobby       @relation(fields: [hobbyId], references: [id])
   @@map("user_hobbies")
 }
