@@ -1,7 +1,7 @@
 import { Express, Request, Response } from 'express';
 import {
   createUserHandler,
-  getUserHandler,
+  createUserProfileHandler,
 } from './controllers/user.controller';
 import {
   logOutUserHandler,
@@ -9,11 +9,16 @@ import {
 } from './controllers/auth.controller';
 import deserializeUser from './middlewares/deserializeUser';
 import requireUser from './middlewares/requireUser';
-import { createUserInputSchema } from './schemas/user.schema';
+import {
+  createUserInputSchema,
+  createUserProfileInputSchema,
+} from './schemas/user.schema';
 import { loginInputSchema } from './schemas/auth.schema';
 import validateInput from './utils/validateInput';
 import swaggerUI from 'swagger-ui-express';
 import swaggerDocs from './../swagger.json';
+import { createUserHobbyInputSchema } from './schemas/hobby.schema';
+import { addHobbyToUserHandler } from './controllers/hobby.controller';
 
 export default function routes(app: Express) {
   app.get('/healthcheck', (req: Request, res: Response) => res.sendStatus(200));
@@ -29,6 +34,19 @@ export default function routes(app: Express) {
   app.use(deserializeUser);
   app.use(requireUser);
 
+  app.post(
+    '/api/user/profile',
+    validateInput(createUserProfileInputSchema),
+    createUserProfileHandler,
+  );
+  app.post(
+    '/api/user/hobby',
+    validateInput(createUserHobbyInputSchema),
+    addHobbyToUserHandler,
+  );
+
   app.delete('/api/logout', logOutUserHandler);
-  app.get('/api/user', getUserHandler);
+  app.get('/api/user', (req, res) =>
+    res.status(200).json({ user: res.locals.user }),
+  );
 }
