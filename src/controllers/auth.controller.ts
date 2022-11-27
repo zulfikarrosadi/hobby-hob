@@ -18,18 +18,18 @@ export async function loginUserHandler(
     const token = createSession({
       email: user.email,
       userId: user.id,
+      userProfileId: user.UserProfile[0].id,
     });
 
     res.cookie('refreshToken', token.get('refreshToken'), {
       httpOnly: true,
       sameSite: 'lax',
     });
-
     res.cookie('accessToken', token.get('accessToken'), {
       httpOnly: true,
       sameSite: 'lax',
-      maxAge: 54000,
     });
+
     return res.status(200).json({
       email: user.email,
       userId: user.id,

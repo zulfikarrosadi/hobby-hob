@@ -1,10 +1,18 @@
 import c from 'config';
 import { JwtPayload, sign, SignOptions, verify } from 'jsonwebtoken';
 
-type TJwtPayload = Pick<JwtPayload, 'email' | 'userId' | 'isValid'>;
+type TJwtPayload = Pick<
+  JwtPayload,
+  'email' | 'userId' | 'isValid' | 'userProfileId'
+>;
 
 export function createJwt(
-  payload: { email: string; userId: number; isValid: boolean },
+  payload: {
+    email: string;
+    userId: number;
+    userProfileId: number;
+    isValid: boolean;
+  },
   options?: Omit<SignOptions, 'algorithm'>,
 ) {
   const token = sign({ ...payload }, c.get('privateKay'), {

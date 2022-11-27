@@ -5,17 +5,19 @@ import { createJwt, verifyJwt } from './jwtUtil';
 export default function createSession({
   email,
   userId,
+  userProfileId,
   newRefreshToken = true,
 }: {
   email: string;
   userId: number;
+  userProfileId: number;
   newRefreshToken?: boolean;
 }): Map<'accessToken' | 'refreshToken', string> {
   const token = new Map<'accessToken' | 'refreshToken', string>();
   token.set(
     'accessToken',
     createJwt(
-      { email, userId, isValid: true },
+      { email, userId, userProfileId, isValid: true },
       { expiresIn: c.get<string>('accessTokenTtl') },
     ),
   );
@@ -24,7 +26,7 @@ export default function createSession({
     token.set(
       'refreshToken',
       createJwt(
-        { email, userId, isValid: true },
+        { email, userId, userProfileId, isValid: true },
         { expiresIn: c.get('refreshTokenTtl') },
       ),
     );
