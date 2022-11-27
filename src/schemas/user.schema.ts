@@ -18,4 +18,21 @@ export const createUserInputSchema = object({
   }),
 });
 
+export const createUserProfileInputSchema = object({
+  body: object({
+    username: string({ required_error: 'Username is required' }).min(
+      6,
+      'Username should contain at least 6 characters',
+    ),
+    fullName: string({ required_error: 'You should enter your fullname' }),
+    bio: string({
+      required_error:
+        'You should give a short description about you and your hobby',
+    }),
+  }),
+});
+
 export type TCreateUserInput = TypeOf<typeof createUserInputSchema>;
+export type TCreateUserProfileIntput = TypeOf<
+  typeof createUserProfileInputSchema
+>;
