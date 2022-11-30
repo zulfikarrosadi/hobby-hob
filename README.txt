@@ -1,1 +1,0 @@
-express, cors, prisma 3.8
