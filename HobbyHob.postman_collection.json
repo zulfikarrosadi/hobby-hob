@@ -1,231 +1,429 @@
 {
-  "info": {
-    "_postman_id": "1e9f8632-eceb-452b-90e9-6c11843df18b",
-    "name": "HobbyHob",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
-  "item": [
-    {
-      "name": "get user",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "const collectionEmail = pm.collectionVariables.get('email')\r",
-              "const collectionUserId = pm.collectionVariables.get('userId')\r",
-              "\r",
-              "pm.test(\"Status code is 200\", function () {\r",
-              "    pm.response.to.have.status(200);\r",
-              "});\r",
-              "\r",
-              "pm.test(\"JSON Body is valid\", function () {\r",
-              "    var { user } = pm.response.json();\r",
-              "    \r",
-              "    pm.expect(user.userId).to.eql(collectionUserId);\r",
-              "    pm.expect(user.email).to.eql(collectionEmail);\r",
-              "});"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{accessToken}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:3000/api/user",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["api", "user"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "login user",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "const { userId, email: currentEmail, accessToken } = pm.response.json()\r",
-              "\r",
-              "pm.collectionVariables.set('accessToken', accessToken)\r",
-              "pm.collectionVariables.set('email', currentEmail)\r",
-              "pm.collectionVariables.set('userId', userId)\r",
-              "\r",
-              "console.log(pm.cookies)\r",
-              "\r",
-              "pm.test(\"Status code is 200\", function () {\r",
-              "    pm.response.to.have.status(200);\r",
-              "});\r",
-              "\r",
-              "pm.test(\"JSON Body is valid\", function () {\r",
-              "    var jsonData = pm.response.json();\r",
-              "    pm.expect(jsonData.email).to.eql(currentEmail);\r",
-              "    pm.expect(jsonData.userId).to.eql(userId);\r",
-              "});"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:3000/api/login",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["api", "login"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "logout",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Status code is 200\", function () {\r",
-              "    pm.response.to.have.status(200);\r",
-              "});\r",
-              "\r",
-              "pm.test(\"JSON Body is valid\", function () {\r",
-              "    var jsonData = pm.response.json();\r",
-              "    pm.expect(jsonData.message).to.eql('logout success');\r",
-              "});\r",
-              ""
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "method": "DELETE",
-        "header": [],
-        "url": {
-          "raw": "{{endpoint}}logout",
-          "host": ["{{endpoint}}logout"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "register user",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "const { id: userId, email: currentEmail, accessToken } = pm.response.json()\r",
-              "\r",
-              "pm.collectionVariables.set('accessToken', accessToken)\r",
-              "pm.collectionVariables.set('email', currentEmail)\r",
-              "pm.collectionVariables.set('userId', userId)\r",
-              "\r",
-              "pm.test(\"JSON Body is valid\", function () {\r",
-              "    var jsonData = pm.response.json();\r",
-              "    pm.expect(jsonData.email).to.eql(currentEmail);\r",
-              "    pm.expect(jsonData.id).to.eql(userId);\r",
-              "});\r",
-              "\r",
-              "pm.test(\"Status code is 200\", function () {\r",
-              "    pm.response.to.have.status(201);\r",
-              "});"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"email\":\"{{$randomEmail}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"passwordConfirmation\": \"{{password}}\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:3000/api/register",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["api", "register"]
-        }
-      },
-      "response": []
-    }
-  ],
-  "event": [
-    {
-      "listen": "prerequest",
-      "script": {
-        "type": "text/javascript",
-        "exec": [""]
-      }
-    },
-    {
-      "listen": "test",
-      "script": {
-        "type": "text/javascript",
-        "exec": [""]
-      }
-    }
-  ],
-  "variable": [
-    {
-      "key": "password",
-      "value": "password",
-      "type": "default"
-    },
-    {
-      "key": "endpoint",
-      "value": "http://localhost:3000/api/",
-      "type": "default"
-    },
-    {
-      "key": "userId",
-      "value": "",
-      "type": "default"
-    },
-    {
-      "key": "email",
-      "value": "",
-      "type": "default"
-    },
-    {
-      "key": "accessToken",
-      "value": "",
-      "type": "default"
-    }
-  ]
+	"info": {
+		"_postman_id": "76450c68-795e-45ee-a17d-3f3d61533741",
+		"name": "HobbyHob",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "get user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const collectionEmail = pm.collectionVariables.get('email')\r",
+							"const collectionUserId = pm.collectionVariables.get('userId')\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"JSON Body is valid\", function () {\r",
+							"    var { user } = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(user.userId).to.eql(collectionUserId);\r",
+							"    pm.expect(user.email).to.eql(collectionEmail);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const { userId, email: currentEmail, accessToken } = pm.response.json()\r",
+							"\r",
+							"pm.collectionVariables.set('accessToken', accessToken)\r",
+							"pm.collectionVariables.set('email', currentEmail)\r",
+							"pm.collectionVariables.set('userId', userId)\r",
+							"\r",
+							"console.log(pm.cookies)\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"JSON Body is valid\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.email).to.eql(currentEmail);\r",
+							"    pm.expect(jsonData.userId).to.eql(userId);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "logout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"JSON Body is valid\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.eql('logout success');\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{endpoint}}logout",
+					"host": [
+						"{{endpoint}}logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "register user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const { id: userId, email: currentEmail, accessToken } = pm.response.json()\r",
+							"\r",
+							"pm.collectionVariables.set('accessToken', accessToken)\r",
+							"pm.collectionVariables.set('email', currentEmail)\r",
+							"pm.collectionVariables.set('userId', userId)\r",
+							"\r",
+							"pm.test(\"JSON Body is valid\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.email).to.eql(currentEmail);\r",
+							"    pm.expect(jsonData.id).to.eql(userId);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"{{$randomEmail}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"passwordConfirmation\": \"{{password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user profile",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " {\r\n    \"username\":\"{{$randomUserName}}\",\r\n    \"fullName\": \"{{$randomFullName}}\",\r\n    \"bio\": \"{{$randomFullName}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{endpoint}}user/profile",
+					"host": [
+						"{{endpoint}}user"
+					],
+					"path": [
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add user hobby",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"hobbyId\": [1, 2, 3, 4, 4, 4]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{endpoint}}user/hobby",
+					"host": [
+						"{{endpoint}}user"
+					],
+					"path": [
+						"hobby"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all hobby",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const hobbies = pm.response.json().hobbies\r",
+							"const cursor = hobbies[hobbies.length - 1].name\r",
+							"\r",
+							"pm.collectionVariables.set('hobbyCursor', cursor)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{endpoint}}hobbies",
+					"host": [
+						"{{endpoint}}hobbies"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get infinite hobby",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const hobbies = pm.response.json().hobbies\r",
+							"const cursor = hobbies[hobbies.length - 1].name\r",
+							"\r",
+							"pm.collectionVariables.set('hobbyCursor', cursor)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{endpoint}}hobbies/:cursor",
+					"host": [
+						"{{endpoint}}hobbies"
+					],
+					"path": [
+						":cursor"
+					],
+					"variable": [
+						{
+							"key": "cursor",
+							"value": "{{hobbyCursor}}",
+							"description": "hobby name"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "infinite user in hobby",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{endpoint}}hobbies/users/:hobbyName/:hobbyId/:userProfileId",
+					"host": [
+						"{{endpoint}}hobbies"
+					],
+					"path": [
+						"users",
+						":hobbyName",
+						":hobbyId",
+						":userProfileId"
+					],
+					"variable": [
+						{
+							"key": "hobbyName",
+							"value": "soccer"
+						},
+						{
+							"key": "hobbyId",
+							"value": "1"
+						},
+						{
+							"key": "userProfileId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user in hobby",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{endpoint}}hobies/users/:hobbyName",
+					"host": [
+						"{{endpoint}}hobies"
+					],
+					"path": [
+						"users",
+						":hobbyName"
+					],
+					"variable": [
+						{
+							"key": "hobbyName",
+							"value": "soccer"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "password",
+			"value": "password",
+			"type": "default"
+		},
+		{
+			"key": "endpoint",
+			"value": "http://localhost:3000/api/",
+			"type": "default"
+		},
+		{
+			"key": "userId",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "email",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "accessToken",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "hobbyCursor",
+			"value": "",
+			"type": "default"
+		}
+	]
 }
