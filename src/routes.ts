@@ -18,7 +18,13 @@ import validateInput from './utils/validateInput';
 import swaggerUI from 'swagger-ui-express';
 import swaggerDocs from './../swagger.json';
 import { createUserHobbyInputSchema } from './schemas/hobby.schema';
-import { addHobbyToUserHandler } from './controllers/hobby.controller';
+import {
+  addHobbyToUserHandler,
+  getHobbiesHandler,
+  getHobbyAndUserHandler,
+  getInfiniteHobbiesHandler,
+  getInfiniteHobbyAndUserHandler,
+} from './controllers/hobby.controller';
 
 export default function routes(app: Express) {
   app.get('/healthcheck', (req: Request, res: Response) => res.sendStatus(200));
@@ -43,6 +49,13 @@ export default function routes(app: Express) {
     '/api/user/hobby',
     validateInput(createUserHobbyInputSchema),
     addHobbyToUserHandler,
+  );
+  app.get('/api/hobbies', getHobbiesHandler);
+  app.get('/api/hobbies/:cursor', getInfiniteHobbiesHandler);
+  app.get('/api/hobies/users/:hobbyName', getHobbyAndUserHandler);
+  app.get(
+    '/api/hobbies/users/:hobbyName/:hobbyId/:userProfileId',
+    getInfiniteHobbyAndUserHandler,
   );
 
   app.delete('/api/logout', logOutUserHandler);
