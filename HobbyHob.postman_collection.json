@@ -256,10 +256,9 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"const hobbies = pm.response.json().hobbies\r",
-							"const cursor = hobbies[hobbies.length - 1].name\r",
+							"const result = pm.response.json()\r",
 							"\r",
-							"pm.collectionVariables.set('hobbyCursor', cursor)"
+							"pm.collectionVariables.set('hobbyCursor', result.cursor)"
 						],
 						"type": "text/javascript"
 					}
@@ -269,9 +268,15 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{endpoint}}hobbies",
+					"raw": "{{endpoint}}hobbies?hobbyName=net",
 					"host": [
 						"{{endpoint}}hobbies"
+					],
+					"query": [
+						{
+							"key": "hobbyName",
+							"value": "net"
+						}
 					]
 				}
 			},
@@ -284,10 +289,9 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"const hobbies = pm.response.json().hobbies\r",
-							"const cursor = hobbies[hobbies.length - 1].name\r",
+							"const result = pm.response.json()\r",
 							"\r",
-							"pm.collectionVariables.set('hobbyCursor', cursor)"
+							"pm.collectionVariables.set('hobbyCursor', result.cursor)"
 						],
 						"type": "text/javascript"
 					}
@@ -317,6 +321,20 @@
 		},
 		{
 			"name": "infinite user in hobby",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const result = pm.response.json()\r",
+							"pm.collectionVariables.set('hobbyIdCursor', result.cursor.hobbyId)\r",
+							"pm.collectionVariables.set('hobbyNameCuror', result.cursor.hobbyName)\r",
+							"pm.collectionVariables.set('userProfileIdCursor', result.cursor.userProfilId)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -334,15 +352,15 @@
 					"variable": [
 						{
 							"key": "hobbyName",
-							"value": "soccer"
+							"value": "{{hobbyNameCuror}}"
 						},
 						{
 							"key": "hobbyId",
-							"value": "1"
+							"value": "{{hobbyIdCursor}}"
 						},
 						{
 							"key": "userProfileId",
-							"value": "1"
+							"value": "{{userProfileIdCursor}}"
 						}
 					]
 				}
@@ -351,6 +369,20 @@
 		},
 		{
 			"name": "user in hobby",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const result = pm.response.json()\r",
+							"pm.collectionVariables.set('hobbyIdCursor', result.cursor.hobbyId)\r",
+							"pm.collectionVariables.set('hobbyNameCuror', result.cursor.hobbyName)\r",
+							"pm.collectionVariables.set('userProfileIdCursor', result.cursor.userProfilId)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -422,6 +454,21 @@
 		},
 		{
 			"key": "hobbyCursor",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "hobbyNameCuror",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "hobbyIdCursor",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "userProfileIdCursor",
 			"value": "",
 			"type": "default"
 		}
