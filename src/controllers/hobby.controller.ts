@@ -68,8 +68,13 @@ export async function getInfiniteHobbiesHandler(
 
   try {
     const hobbies = await getInfiniteHobbies({ name: cursor });
+    console.log(hobbies);
 
-    return res.status(200).json({ message: 'success', hobbies });
+    return res.status(200).json({
+      message: 'success',
+      cursor: hobbies[hobbies.length - 1].name,
+      data: hobbies,
+    });
   } catch (error) {
     console.log(error);
     return res.status(404).json({ message: 'hobby not found' });
@@ -93,7 +98,15 @@ export async function getInfiniteHobbyAndUserHandler(
 
     const result = mappingUserHobbyResult(rawData);
 
-    return res.status(200).json({ message: 'success', data: result });
+    return res.status(200).json({
+      message: 'success',
+      cursor: {
+        hobbyId: result.hobbyId,
+        hobbyName: result.hobbyName,
+        userProfileId: result.users[result.users.length - 1].id,
+      },
+      data: result,
+    });
   } catch (error) {
     console.log(error);
     return res.status(404).json({ message: 'User not found' });
@@ -107,7 +120,15 @@ export async function getHobbyAndUserHandler(req: Request, res: Response) {
 
     const result = mappingUserHobbyResult(rawData);
 
-    return res.status(200).json({ message: 'success', data: result });
+    return res.status(200).json({
+      message: 'success',
+      cursor: {
+        hobbyId: result.hobbyId,
+        hobbyName: result.hobbyName,
+        userProfileId: result.users[result.users.length - 1].id,
+      },
+      data: result,
+    });
   } catch (error) {
     console.log(error);
 
