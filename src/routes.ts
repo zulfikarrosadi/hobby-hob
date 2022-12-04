@@ -14,7 +14,7 @@ import {
   createUserProfileInputSchema,
 } from './schemas/user.schema';
 import { loginInputSchema } from './schemas/auth.schema';
-import validateInput from './utils/validateInput';
+import { validateInput } from './utils/validateAndThrow';
 import swaggerUI from 'swagger-ui-express';
 import swaggerDocs from './../swagger.json';
 import { createUserHobbyInputSchema } from './schemas/hobby.schema';

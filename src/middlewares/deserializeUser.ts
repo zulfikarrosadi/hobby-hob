@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import createSession from '../utils/sessionUtil';
-import { verifyJwt } from '../utils/jwtUtil';
+import createSession, { verifyJwt } from '../utils/sessoionHelper';
 
 export default function deserializeUser(
   req: Request,
