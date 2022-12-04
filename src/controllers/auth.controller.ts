@@ -2,7 +2,7 @@ import { compare } from 'bcrypt';
 import { Request, Response } from 'express';
 import { TLoginInput } from '../schemas/auth.schema';
 import { findUserByEmail } from '../services/auth.service';
-import createSession, { deleteSession } from '../utils/sessionUtil';
+import createSession, { deleteSession } from '../utils/sessoionHelper';
 
 export async function loginUserHandler(
   req: Request<{}, {}, TLoginInput['body']>,

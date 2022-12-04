@@ -4,11 +4,11 @@ import {
   TCreateUserProfileIntput,
 } from '../schemas/user.schema';
 import { createUser, createUserProfile } from '../services/user.service';
-import createSession from '../utils/sessionUtil';
-import hashPassword from '../utils/hashPassword';
+import createSession from '../utils/sessoionHelper';
+import { hashPassword } from '../utils/userHelper';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
-import { RequestError } from '../utils/error';
-import { generateUsername } from '../utils/generateUsername';
+import { constraintError } from '../utils/validateAndThrow';
+import { generateUsername } from '../utils/userHelper';
 
 export async function createUserHandler(
   req: Request<{}, {}, Required<TCreateUserInput['body']>> & {
@@ -70,10 +70,10 @@ export async function createUserProfileHandler(
       message: 'successfully create user profile',
     });
   } catch (error) {
-    let e: RequestError;
+    let e: { message: string; code: number };
 
     if (error instanceof PrismaClientKnownRequestError) {
-      e = new RequestError(error.code, error.meta);
+      e = constraintError({ prismaErrCode: error.code, meta: error.meta });
     }
 
     return res.status(e.code).json({ message: e.message });
