@@ -2,19 +2,40 @@ import { Request, Response } from 'express';
 import { TCreateUserHobbyInput } from '../schemas/hobby.schema';
 import {
   connectHobbiesToUser,
+  findHobbyByName,
   getHobbies,
   getInfiniteHobbies,
   getInfiniteHobbyAndUser,
   getUserAndHobby,
 } from '../services/hobby.service';
-import mapUserHoobiesInput from '../utils/mappingChosenHobby';
-import { mappingUserHobbyResult } from '../utils/mappingUserInHobbyResult';
+import {
+  mapUserHoobiesInput,
+  mappingUserHobbyResult,
+} from '../utils/hobbyHelper';
 
-export async function getHobbiesHandler(req: Request, res: Response) {
+export async function getHobbiesHandler(
+  req: Request<{}, {}, {}, { hobbyName: string }>,
+  res: Response,
+) {
+  const { hobbyName } = req.query;
+
   try {
+    if (hobbyName) {
+      const hobbies = await findHobbyByName({ hobbyName });
+      if (!hobbies) throw Error('hobby not found');
+
+      return res.status(200).json({
+        message: 'success',
+        data: hobbies,
+      });
+    }
     const hobbies = await getHobbies();
 
-    return res.status(200).json({ message: 'success', hobbies });
+    return res.status(200).json({
+      message: 'success',
+      cursor: hobbies[hobbies.length - 1].name,
+      data: hobbies,
+    });
   } catch (error) {
     return res.status(404).json({ message: 'hobby not found' });
   }
