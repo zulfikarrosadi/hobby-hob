@@ -1,12 +1,14 @@
 {
 	"info": {
-		"_postman_id": "76450c68-795e-45ee-a17d-3f3d61533741",
+		"_postman_id": "c0a1b631-0d70-407c-8a66-9742dae736ba",
 		"name": "HobbyHob",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"description": "API untuk manajemen hobby berbasis web\n\nFitur fitur utama\n\n1. Melakukan registrasi / login\n2. Meng-update user profile\n3. Mencari hobby hobby yang telah disediakan\n4. Melihat profile orang lain yang memiliki hobby yang sama dengan kita\n5. Menambahkan hobby hobby baru ke profile kita",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14124784"
 	},
 	"item": [
 		{
-			"name": "get user",
+			"name": "User",
 			"event": [
 				{
 					"listen": "test",
@@ -47,12 +49,325 @@
 						"api",
 						"user"
 					]
-				}
+				},
+				"description": "_for testing purpose only_"
 			},
 			"response": []
 		},
 		{
-			"name": "login user",
+			"name": "Register User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const { id: userId, email: currentEmail, accessToken } = pm.response.json()\r",
+							"\r",
+							"pm.collectionVariables.set('accessToken', accessToken)\r",
+							"pm.collectionVariables.set('email', currentEmail)\r",
+							"pm.collectionVariables.set('userId', userId)\r",
+							"\r",
+							"pm.test(\"JSON Body is valid\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.email).to.eql(currentEmail);\r",
+							"    pm.expect(jsonData.id).to.eql(userId);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"{{$randomEmail}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"passwordConfirmation\": \"{{password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"register"
+					]
+				},
+				"description": "User melakukan pendaftaran ke HobbyHob agar bisa menggunakan fitur fitur yang disediakan\n\n##### Contoh hasil response ketika request berhasil dilakukan\n\n``` json\n{\n    \"email\": \"example@email.com\",\n    \"userId\": 1,\n    \"userProfileId\": 1,\n    \"username\": \"someRandomUsername\"\n}\n\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "User Profile",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " {\r\n    \"username\":\"{{$randomUserName}}\",\r\n    \"fullName\": \"{{$randomFullName}}\",\r\n    \"bio\": \"{{$randomFullName}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{endpoint}}user/profile",
+					"host": [
+						"{{endpoint}}user"
+					],
+					"path": [
+						"profile"
+					]
+				},
+				"description": "Membuat user profile\n\n##### Contoh hasil respnse ketika request berhasil\n\n``` json\n{\n    \"username\": \"yourUsername\",\n    \"message\": \"success\"\n}\n\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "Add User Hobby",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"hobbyId\": [1, 2, 3, 4, 4, 4]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{endpoint}}user/hobby",
+					"host": [
+						"{{endpoint}}user"
+					],
+					"path": [
+						"hobby"
+					]
+				},
+				"description": "Menambahkan hobby baru\n\n##### Contoh hasil response ketika request berhasil\n\n``` json\n{\n    \"message\": \"success\"\n}\n\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "Hobbies",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const result = pm.response.json()\r",
+							"\r",
+							"pm.collectionVariables.set('hobbyCursor', result.cursor)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{endpoint}}hobbies",
+					"host": [
+						"{{endpoint}}hobbies"
+					],
+					"query": [
+						{
+							"key": "hobbyName",
+							"value": "",
+							"description": "nama hobby yang ingin dicari",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Mengambil semua hobby yang ada, atau mencari hobby berdasarkan nama hobby\n\n##### Contoh response ketika request untuk mengambil semua hobby berhasil\n\n``` json\n{\n    \"message\": \"success\",\n    \"cursor\": \"jogging\",\n    \"data\": [\n        { \"id\": 1, \"name\": \"soccer\" },\n        { \"id\": 2, \"name\": \"jogging\" },\n    ]\n}\n\n```\n\n##### Contoh response ketika request untuk mengambil hobby berdasarkan nama berhasil\n\n``` json\n{\n    \"message\": \"success\",\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"soccer\"\n    }\n}\n\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "Infinite Hobbies",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const result = pm.response.json()\r",
+							"\r",
+							"pm.collectionVariables.set('hobbyCursor', result.cursor)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{endpoint}}hobbies/:cursor",
+					"host": [
+						"{{endpoint}}hobbies"
+					],
+					"path": [
+						":cursor"
+					],
+					"variable": [
+						{
+							"key": "cursor",
+							"value": "{{hobbyCursor}}",
+							"description": "merupakan nama hobby yang didapatkan pada property `cursor`"
+						}
+					]
+				},
+				"description": "Hobby yang dimiliki website ini akan berjumlah ratusan hingga ribuan, menampilkan semua hobby sekaligus bukan ide yang bagus.\n\nAPI ini menyediakan endpoint untuk melakukan tindakan **Infinite Scrolling,** yaitu seiring user melakukan scrolling, maka akan ada data hobby baru yang diambil untuk ditampilkan\n\n##### Contoh hasil response ketika request berhasil\n\n``` json\n{\n    \"message\": \"success\",\n    \"cursor\": \"jogging\",\n    \"data\": [\n        { \"id\": 3, \"name\": \"netflix and chill\" },\n        { \"id\": 4, \"name\": \"reading\" },\n        { \"id\": 5, \"name\": \"swimming\" }\n    ]\n}\n\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "Infinite User in Hobby",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const result = pm.response.json()\r",
+							"pm.collectionVariables.set('hobbyIdCursor', result.cursor.hobbyId)\r",
+							"pm.collectionVariables.set('hobbyNameCuror', result.cursor.hobbyName)\r",
+							"pm.collectionVariables.set('userProfileIdCursor', result.cursor.userProfilId)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{endpoint}}hobbies/users/:hobbyName/:hobbyId/:userProfileId",
+					"host": [
+						"{{endpoint}}hobbies"
+					],
+					"path": [
+						"users",
+						":hobbyName",
+						":hobbyId",
+						":userProfileId"
+					],
+					"variable": [
+						{
+							"key": "hobbyName",
+							"value": "{{hobbyNameCuror}}",
+							"description": "merupakan nama hobby yang didapatkan pada property `cursor`"
+						},
+						{
+							"key": "hobbyId",
+							"value": "{{hobbyIdCursor}}",
+							"description": "merupakan id hobby yang didapatkan pada property `cursor`"
+						},
+						{
+							"key": "userProfileId",
+							"value": "{{userProfileIdCursor}}",
+							"description": "merupakan user profile idyang didapatkan pada property `cursor`"
+						}
+					]
+				},
+				"description": "StartFragment\n\nData user dalam suatu hobby pasti akan berjumlah banyak, menampilkan semua data tersebut sekaligus bukanlah ide yang bagus\n\nAPI ini menyediakan endpoint untuk melakukan tindakan **Infinite Scrolling,** yaitu seiring user melakukan scrolling, maka akan ada data user baru yang diambil untuk ditampilkan\n\n##### Contoh hasil response ketika request berhasil\n\nEndFragment\n\n``` json\n{\n    \"message\": \"success\",\n    \"cursor\": {\n        \"hobbyId\": 1,\n        \"hobbyName\": \"soccer\",\n        \"userProfileId\" 50\n    },\n    \"data\": [\n        { \"id\": 51, \"username\": \"JhonDoe\" },\n        { \"id\": 52, \"username\": \"JaneDoe\" }\n    ]\n}\n\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "Users in Hobby",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const result = pm.response.json()\r",
+							"pm.collectionVariables.set('hobbyIdCursor', result.cursor.hobbyId)\r",
+							"pm.collectionVariables.set('hobbyNameCuror', result.cursor.hobbyName)\r",
+							"pm.collectionVariables.set('userProfileIdCursor', result.cursor.userProfilId)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{endpoint}}hobies/users/:hobbyName",
+					"host": [
+						"{{endpoint}}hobies"
+					],
+					"path": [
+						"users",
+						":hobbyName"
+					],
+					"variable": [
+						{
+							"key": "hobbyName",
+							"value": "soccer",
+							"description": "Nama hobby yang kita ingin mengetahui data user yang memiliki hobby ini"
+						}
+					]
+				},
+				"description": "Menampilkan data user yang memiliki hobby yang dipilih\n\n##### Contoh response ketika requeset berhasil dilakukan\n\n``` json\n{\n    \"message\": \"success\",\n    \"cursor\": {\n        \"hobbyId\": 1,\n        \"hobbyName\": \"soccer\",\n        \"userProfileId\": 20\n    },\n    \"data\": [\n        \"hobbyName\": \"soccer\",\n        \"hobbyId\": 1,\n        \"users\": [\n            { \"id\": 1, \"username\": \"someUsername\" },\n            { \"id\": 2, \"username\": \"someUsername2\" }\n        ]\n    ]\n}\n\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"JSON Body is valid\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.eql('logout success');\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{endpoint}}logout",
+					"host": [
+						"{{endpoint}}logout"
+					]
+				},
+				"description": "Mengeluarkan user dari HobbyHob"
+			},
+			"response": []
+		},
+		{
+			"name": "Login User",
 			"event": [
 				{
 					"listen": "test",
@@ -103,305 +418,8 @@
 						"api",
 						"login"
 					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "logout",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"JSON Body is valid\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.message).to.eql('logout success');\r",
-							"});\r",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{endpoint}}logout",
-					"host": [
-						"{{endpoint}}logout"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "register user",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"const { id: userId, email: currentEmail, accessToken } = pm.response.json()\r",
-							"\r",
-							"pm.collectionVariables.set('accessToken', accessToken)\r",
-							"pm.collectionVariables.set('email', currentEmail)\r",
-							"pm.collectionVariables.set('userId', userId)\r",
-							"\r",
-							"pm.test(\"JSON Body is valid\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.email).to.eql(currentEmail);\r",
-							"    pm.expect(jsonData.id).to.eql(userId);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(201);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"email\":\"{{$randomEmail}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"passwordConfirmation\": \"{{password}}\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
 				},
-				"url": {
-					"raw": "http://localhost:3000/api/register",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"api",
-						"register"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "user profile",
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": " {\r\n    \"username\":\"{{$randomUserName}}\",\r\n    \"fullName\": \"{{$randomFullName}}\",\r\n    \"bio\": \"{{$randomFullName}}\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{endpoint}}user/profile",
-					"host": [
-						"{{endpoint}}user"
-					],
-					"path": [
-						"profile"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "add user hobby",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"hobbyId\": [1, 2, 3, 4, 4, 4]\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{endpoint}}user/hobby",
-					"host": [
-						"{{endpoint}}user"
-					],
-					"path": [
-						"hobby"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "all hobby",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"const result = pm.response.json()\r",
-							"\r",
-							"pm.collectionVariables.set('hobbyCursor', result.cursor)"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{endpoint}}hobbies?hobbyName=net",
-					"host": [
-						"{{endpoint}}hobbies"
-					],
-					"query": [
-						{
-							"key": "hobbyName",
-							"value": "net"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "get infinite hobby",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"const result = pm.response.json()\r",
-							"\r",
-							"pm.collectionVariables.set('hobbyCursor', result.cursor)"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{endpoint}}hobbies/:cursor",
-					"host": [
-						"{{endpoint}}hobbies"
-					],
-					"path": [
-						":cursor"
-					],
-					"variable": [
-						{
-							"key": "cursor",
-							"value": "{{hobbyCursor}}",
-							"description": "hobby name"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "infinite user in hobby",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"const result = pm.response.json()\r",
-							"pm.collectionVariables.set('hobbyIdCursor', result.cursor.hobbyId)\r",
-							"pm.collectionVariables.set('hobbyNameCuror', result.cursor.hobbyName)\r",
-							"pm.collectionVariables.set('userProfileIdCursor', result.cursor.userProfilId)"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{endpoint}}hobbies/users/:hobbyName/:hobbyId/:userProfileId",
-					"host": [
-						"{{endpoint}}hobbies"
-					],
-					"path": [
-						"users",
-						":hobbyName",
-						":hobbyId",
-						":userProfileId"
-					],
-					"variable": [
-						{
-							"key": "hobbyName",
-							"value": "{{hobbyNameCuror}}"
-						},
-						{
-							"key": "hobbyId",
-							"value": "{{hobbyIdCursor}}"
-						},
-						{
-							"key": "userProfileId",
-							"value": "{{userProfileIdCursor}}"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "user in hobby",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"const result = pm.response.json()\r",
-							"pm.collectionVariables.set('hobbyIdCursor', result.cursor.hobbyId)\r",
-							"pm.collectionVariables.set('hobbyNameCuror', result.cursor.hobbyName)\r",
-							"pm.collectionVariables.set('userProfileIdCursor', result.cursor.userProfilId)"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{endpoint}}hobies/users/:hobbyName",
-					"host": [
-						"{{endpoint}}hobies"
-					],
-					"path": [
-						"users",
-						":hobbyName"
-					],
-					"variable": [
-						{
-							"key": "hobbyName",
-							"value": "soccer"
-						}
-					]
-				}
+				"description": "Melakukan proses login\n\n##### Contoh Hasil Response\n\n``` json\n{\n    \"email\": \"example@email.com\",\n    \"userId: 1\n}\n\n```"
 			},
 			"response": []
 		}
