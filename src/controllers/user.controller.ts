@@ -67,7 +67,7 @@ export async function createUserProfileHandler(
 
     return res.status(201).json({
       username: result.username,
-      message: 'successfully create user profile',
+      message: 'success',
     });
   } catch (error) {
     let e: { message: string; code: number };
