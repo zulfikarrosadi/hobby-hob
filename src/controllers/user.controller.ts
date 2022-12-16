@@ -14,12 +14,7 @@ export async function createUserHandler(
   req: Request<{}, {}, Required<TCreateUserInput['body']>> & {
     user?: { email: string };
   },
-  res: Response<
-    Omit<
-      Required<TCreateUserInput['body']>,
-      'password' | 'passwordConfirmation'
-    > & { username: string; userId: number; userProfileId: number }
-  >,
+  res: Response,
 ) {
   const { email, password } = req.body;
   try {
@@ -36,12 +31,14 @@ export async function createUserHandler(
     });
 
     res.cookie('refreshToken', token.get('refreshToken'), {
-      httpOnly: true,
-      sameSite: 'lax',
+      sameSite: 'none',
+      secure: true,
+      maxAge: 86400
     });
     res.cookie('accessToken', token.get('accessToken'), {
-      httpOnly: true,
-      sameSite: 'lax',
+      sameSite: 'none',
+      secure: true,
+      maxAge: 86400
     });
     return res.status(201).json({
       email: user.email,
@@ -50,8 +47,12 @@ export async function createUserHandler(
       username: user.UserProfile[0].username,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json(error);
+    let e: { message: string; code: number };
+
+    if (error instanceof PrismaClientKnownRequestError) {
+      e = constraintError({ prismaErrCode: error.code, meta: error.meta });
+    }
+    return res.status(e.code || 400).json({ message: e.message });
   }
 }
 

@@ -1,10 +1,9 @@
 {
 	"info": {
-		"_postman_id": "c0a1b631-0d70-407c-8a66-9742dae736ba",
+		"_postman_id": "0a3929c3-2ac9-454f-aa6c-d2b15c9d7603",
 		"name": "HobbyHob",
 		"description": "API untuk manajemen hobby berbasis web\n\nFitur fitur utama\n\n1. Melakukan registrasi / login\n2. Meng-update user profile\n3. Mencari hobby hobby yang telah disediakan\n4. Melihat profile orang lain yang memiliki hobby yang sama dengan kita\n5. Menambahkan hobby hobby baru ke profile kita",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "14124784"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
@@ -115,11 +114,11 @@
 				"auth": {
 					"type": "noauth"
 				},
-				"method": "POST",
+				"method": "PATCH",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": " {\r\n    \"username\":\"{{$randomUserName}}\",\r\n    \"fullName\": \"{{$randomFullName}}\",\r\n    \"bio\": \"{{$randomFullName}}\"\r\n}",
+					"raw": " {\r\n    \"username\":\"{{$randomUserName}}\",\r\n    \"fullName\": \"{{$randomFullName}}\",\r\n    \"bio\": \"{{$randomFullName}}\",\r\n    \"sosmed\": {\r\n        \"instagram\": \"{{$randomUserName}}\",\r\n        \"tiktok\": \"{{$randomUserName}}\",\r\n        \"linkedin\": \"{{$randomUserName}}\",\r\n        \"website\": \"{{$randomUrl}}\"\r\n    }\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

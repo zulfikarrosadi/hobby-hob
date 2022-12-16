@@ -8,6 +8,9 @@
     "db:push": "npx prisma db push",
     "db:pull": "npx prisma db pull"
   },
+  "prisma": {
+    "seed": "ts-node --transpile-only prisma/seed.ts"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

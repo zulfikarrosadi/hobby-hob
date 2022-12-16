@@ -1,4 +1,4 @@
-import { object, string, TypeOf } from 'zod';
+import { array, object, string, TypeOf } from 'zod';
 
 export const createUserInputSchema = object({
   body: object({
@@ -29,6 +29,13 @@ export const createUserProfileInputSchema = object({
       required_error:
         'You should give a short description about you and your hobby',
     }),
+    sosmed: object({
+      instagram: string().optional(),
+      tiktok: string().optional(),
+      linkedin: string().optional(),
+      website: string().optional(),
+      others: array(string()).optional(),
+    }).optional(),
   }),
 });
 

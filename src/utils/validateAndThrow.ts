@@ -26,7 +26,10 @@ export function constraintError(error: {
     message = 'This user is already registered';
   }
   if (error.meta.target === 'user_profile_username_key') {
-    this.message = 'This username already taken';
+    message = 'This username already taken';
+  }
+  if (error.meta.target === 'users_email_key') {
+    message = 'This user is already registered';
   }
 
   return { message, code };

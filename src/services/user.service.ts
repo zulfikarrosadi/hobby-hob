@@ -1,4 +1,4 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient, Prisma, UserProfile } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -34,14 +34,29 @@ export async function createUserProfile({
   username,
   fullName,
   bio,
+  sosmed,
 }: {
   userId: number;
   username: string;
   fullName: string;
   bio: string;
+  sosmed: {
+    instagram?: string;
+    tiktok?: string;
+    linkedin?: string;
+    website?: string;
+    others?: string[];
+  };
 }): Promise<{ username: string; fullName: string }> {
-  const result = prisma.userProfile.create({
-    data: { fullName, username, bio, UserId: { connect: { id: userId } } },
+  const result = await prisma.userProfile.update({
+    data: {
+      fullName,
+      username,
+      bio,
+      sosmed,
+      UserId: { connect: { id: userId } },
+    },
+    where: { userId },
   });
 
   return result;

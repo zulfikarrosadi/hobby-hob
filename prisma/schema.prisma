@@ -24,6 +24,7 @@ model UserProfile {
   username String  @unique
   fullName String?
   bio      String? @db.Text
+  sosmed   Json?   @db.Json
   userId   Int     @unique
 
   UserHobby UserHobby[]
@@ -32,8 +33,9 @@ model UserProfile {
 }
 
 model Hobby {
-  id   Int    @id @default(autoincrement())
-  name String @unique
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  description String? @db.VarChar(500)
 
   UserHobby UserHobby[]
   @@map("hobbies")
