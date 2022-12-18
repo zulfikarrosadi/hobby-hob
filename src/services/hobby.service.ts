@@ -19,7 +19,7 @@ export async function connectHobbiesToUser(
 
 export async function getHobbies(): Promise<{ id: number; name: string }[]> {
   const result = await prisma.hobby.findMany({
-    select: { id: true, name: true },
+    select: { id: true, name: true, description: true, image: true },
     orderBy: { name: 'asc' },
     take: 50,
   });
@@ -65,7 +65,9 @@ export async function getHobbyAndUser({
     where: { name: hobbyName },
     include: {
       UserHobby: {
-        select: { user: { select: { id: true, username: true } } },
+        select: {
+          user: { select: { id: true, username: true, sosmed: true } },
+        },
         take: 50,
       },
     },
@@ -87,7 +89,9 @@ export async function getInfiniteHobbyAndUser({
     where: { name: hobbyName },
     include: {
       UserHobby: {
-        select: { user: { select: { username: true, id: true } } },
+        select: {
+          user: { select: { id: true, username: true, sosmed: true } },
+        },
         cursor: { userId_hobbyId: { userId: userProfileId, hobbyId } },
         skip: 1,
         take: 50,
@@ -99,12 +103,22 @@ export async function getInfiniteHobbyAndUser({
   return result;
 }
 
-export async function getUserAndHobby(data: { hobbyName: string }) {
+export async function getUserAndHobby(data: { id: number }) {
   const result = await prisma.hobby.findFirst({
-    where: { name: data.hobbyName },
+    where: { id: data.id },
     include: {
       UserHobby: {
-        select: { user: { select: { username: true, id: true } } },
+        select: {
+          user: {
+            select: {
+              username: true,
+              id: true,
+              bio: true,
+              fullName: true,
+              sosmed: true,
+            },
+          },
+        },
         take: 50,
         orderBy: { userId: 'asc' },
       },

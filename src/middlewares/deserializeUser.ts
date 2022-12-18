@@ -6,9 +6,10 @@ export default function deserializeUser(
   res: Response,
   next: NextFunction,
 ) {
-  if (!req.cookies.accessToken) return next();
+  const accessToken = req.headers['x-access-token'] as string;
 
-  const { accessToken } = req.cookies;
+  if (!accessToken) return next();
+
   if (!accessToken) return next();
 
   const { decoded: accessTokenPayload } = verifyJwt(accessToken);
@@ -17,7 +18,7 @@ export default function deserializeUser(
     return next();
   }
 
-  const refreshToken = req.cookies.refreshToken;
+  const refreshToken = req.headers['x-refresh-token'] as string;
   if (!refreshToken) return next();
 
   const { decoded: refreshTokenPayload } = verifyJwt(refreshToken);
@@ -32,7 +33,6 @@ export default function deserializeUser(
     httpOnly: true,
     sameSite: 'lax',
   });
-  console.log('refrehsed');
 
   return next();
 }

@@ -114,9 +114,9 @@ export async function getInfiniteHobbyAndUserHandler(
 }
 
 export async function getHobbyAndUserHandler(req: Request, res: Response) {
-  const { hobbyName } = req.params;
+  const hobbyId = parseInt(req.params.hobbyId, 10);
   try {
-    const rawData = await getUserAndHobby({ hobbyName });
+    const rawData = await getUserAndHobby({ id: hobbyId });
 
     const result = mappingUserHobbyResult(rawData);
 

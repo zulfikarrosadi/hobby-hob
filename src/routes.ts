@@ -2,6 +2,7 @@ import { Express, Request, Response } from 'express';
 import {
   createUserHandler,
   createUserProfileHandler,
+  getUserProfileHandler,
 } from './controllers/user.controller';
 import {
   logOutUserHandler,
@@ -52,14 +53,12 @@ export default function routes(app: Express) {
   );
   app.get('/api/hobbies', getHobbiesHandler);
   app.get('/api/hobbies/:cursor', getInfiniteHobbiesHandler);
-  app.get('/api/hobies/users/:hobbyName', getHobbyAndUserHandler);
+  app.get('/api/hobbies/users/:hobbyId', getHobbyAndUserHandler);
   app.get(
     '/api/hobbies/users/:hobbyName/:hobbyId/:userProfileId',
     getInfiniteHobbyAndUserHandler,
   );
 
   app.delete('/api/logout', logOutUserHandler);
-  app.get('/api/user', (req, res) =>
-    res.status(200).json({ user: res.locals.user }),
-  );
+  app.get('/api/user/:userProfileId', getUserProfileHandler);
 }

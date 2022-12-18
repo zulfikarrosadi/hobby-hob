@@ -16,6 +16,8 @@ app.use(
       'Origin',
       'X-Access-Token',
       'X-Refresh-Token',
+      'x-access-token',
+      'x-refresh-token',
     ],
     credentials: true,
   }),

@@ -3,12 +3,17 @@ import {
   TCreateUserInput,
   TCreateUserProfileIntput,
 } from '../schemas/user.schema';
-import { createUser, createUserProfile } from '../services/user.service';
+import {
+  createUser,
+  createUserProfile,
+  getUserProfile,
+} from '../services/user.service';
 import createSession from '../utils/sessoionHelper';
-import { hashPassword } from '../utils/userHelper';
+import { hashPassword, mappingUserHobby } from '../utils/userHelper';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { constraintError } from '../utils/validateAndThrow';
 import { generateUsername } from '../utils/userHelper';
+import { mappingUserHobbyResult } from '../utils/hobbyHelper';
 
 export async function createUserHandler(
   req: Request<{}, {}, Required<TCreateUserInput['body']>> & {
@@ -33,26 +38,29 @@ export async function createUserHandler(
     res.cookie('refreshToken', token.get('refreshToken'), {
       sameSite: 'none',
       secure: true,
-      maxAge: 86400
+      maxAge: 86400,
     });
     res.cookie('accessToken', token.get('accessToken'), {
       sameSite: 'none',
       secure: true,
-      maxAge: 86400
+      maxAge: 86400,
     });
     return res.status(201).json({
       email: user.email,
       userId: user.id,
       userProfileId: user.UserProfile[0].id,
       username: user.UserProfile[0].username,
+      accessToken: token.get('accessToken'),
+      refreshToken: token.get('refreshToken'),
     });
   } catch (error) {
+    console.log(error);
     let e: { message: string; code: number };
 
     if (error instanceof PrismaClientKnownRequestError) {
       e = constraintError({ prismaErrCode: error.code, meta: error.meta });
     }
-    return res.status(e.code || 400).json({ message: e.message });
+    return res.status(400).json({ message: e.message });
   }
 }
 
@@ -78,5 +86,27 @@ export async function createUserProfileHandler(
     }
 
     return res.status(e.code).json({ message: e.message });
+  }
+}
+
+export async function getUserProfileHandler(req: Request, res: Response) {
+  const userProfileId = parseInt(req.params.userProfileId, 10);
+
+  try {
+    const user = await getUserProfile({ userProfileId });
+    const mappedHobby = mappingUserHobby(user.UserHobby);
+    const result = {
+      id: user.id,
+      username: user.username,
+      fullName: user.fullName,
+      bio: user.bio,
+      sosmed: user.sosmed,
+      hobbies: mappedHobby.hobby,
+    };
+
+    if (!user) throw Error('user does not exists');
+    return res.status(200).json(result);
+  } catch (error) {
+    return res.status(404).json({ message: error.message });
   }
 }

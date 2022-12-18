@@ -63,3 +63,29 @@ export async function createUserProfile({
 }
 
 export async function updateUserProfile({ bio }: { bio: string }) {}
+
+export async function getUserProfile({
+  userProfileId,
+}: {
+  userProfileId: number;
+}): Promise<{
+  id: number;
+  username: string;
+  fullName: string;
+  bio: string;
+  sosmed: Prisma.JsonValue;
+  UserHobby: {
+    userId: number;
+    hobbyId: number;
+    hobby: { id: number; name: string };
+  }[];
+}> {
+  const result = await prisma.userProfile.findFirst({
+    where: { id: userProfileId },
+    include: {
+      UserHobby: { include: { hobby: { select: { id: true, name: true } } } },
+    },
+  });
+
+  return result;
+}

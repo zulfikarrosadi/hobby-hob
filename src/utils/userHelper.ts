@@ -284,3 +284,17 @@ export function generateUsername() {
 
   return `${names[nameIndex]}_${fruits[fruitIndex]}${randomNumber}`.toLowerCase();
 }
+
+export function mappingUserHobby(
+  userHobby: {
+    userId: number;
+    hobbyId: number;
+    hobby: { id: number; name: string };
+  }[],
+): { hobby: { id: number; name: string }[] } {
+  return {
+    hobby: userHobby.map((data) => {
+      return { id: data.hobby.id, name: data.hobby.name };
+    }),
+  };
+}

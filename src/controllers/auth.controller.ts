@@ -33,6 +33,8 @@ export async function loginUserHandler(
     return res.status(200).json({
       email: user.email,
       userId: user.id,
+      accessToken: token.get('accessToken'),
+      refreshToken: token.get('refreshToken'),
     });
   } catch (error) {
     console.log(error);
