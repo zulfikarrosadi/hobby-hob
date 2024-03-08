@@ -84,3 +84,17 @@ export function deleteSession(req: Request) {
   const newToken = createJwt({ ...accessTokenPayload });
   return newToken;
 }
+
+export function setExpiredDate({
+  day = 1,
+  hour = 24,
+}: Partial<{
+  day: number;
+  hour: number;
+}>) {
+  const newDate = new Date();
+  const expiredDate = newDate.setTime(
+    newDate.getTime() + day * hour * 60 * 60 * 1000,
+  );
+  return new Date(expiredDate);
+}
