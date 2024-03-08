@@ -28,10 +28,12 @@ export function verifyJwt(token: string): {
   decoded: TJwtPayload | null;
 } {
   try {
-    const decoded = verify(token, c.get('publicKey')) as TJwtPayload;
+    const decoded = verify(token, c.get('privateKay')) as TJwtPayload;
     if (!decoded.isValid) throw Error;
     return { decoded };
   } catch (error) {
+    console.log('jwt not valid ', error);
+
     return { decoded: null };
   }
 }
