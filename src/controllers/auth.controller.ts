@@ -2,16 +2,23 @@ import { compare } from 'bcrypt';
 import { Request, Response } from 'express';
 import { TLoginInput } from '../schemas/auth.schema';
 import { findUserByEmail } from '../services/auth.service';
-import createSession, { deleteSession } from '../utils/sessoionHelper';
+import createSession, {
+  deleteSession,
+  setExpiredDate,
+} from '../utils/sessoionHelper';
+import GeneralResponse from '../schemas/responses.schema';
 
 export async function loginUserHandler(
   req: Request<{}, {}, TLoginInput['body']>,
-  res: Response,
+  res: Response<GeneralResponse>,
 ) {
   const { email, password } = req.body;
   try {
     email.toLowerCase();
     const user = await findUserByEmail({ email });
+    if (!user) {
+      throw new Error('user not found');
+    }
     const isPasswordVerified = await compare(password, user.password);
 
     if (!isPasswordVerified) throw Error('Email or Password is wrong');
@@ -23,26 +30,40 @@ export async function loginUserHandler(
 
     res.cookie('refreshToken', token.get('refreshToken'), {
       httpOnly: true,
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/auth/refresh',
+      expires: setExpiredDate({ day: 15 }),
     });
     res.cookie('accessToken', token.get('accessToken'), {
       httpOnly: true,
-      sameSite: 'lax',
+      sameSite: 'none',
+      expires: setExpiredDate({ hour: 1 }),
     });
 
     return res.status(200).json({
-      email: user.email,
-      userId: user.id,
-      accessToken: token.get('accessToken'),
-      refreshToken: token.get('refreshToken'),
+      status: 'success',
+      data: {
+        user: {
+          email: user.email,
+          userId: user.id,
+          username: user.UserProfile[0].username,
+          userProfileId: user.UserProfile[0].id,
+        },
+      },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
-    return res.status(400).json({ error: error.message });
+    return res.status(400).json({
+      status: 'fail',
+      errors: [{ code: 400, message: error.message }],
+    });
   }
 }
 
-export async function logOutUserHandler(req: Request, res: Response) {
+export async function logOutUserHandler(
+  req: Request,
+  res: Response<GeneralResponse>,
+) {
   try {
     const invalidToken = deleteSession(req);
 
@@ -58,9 +79,12 @@ export async function logOutUserHandler(req: Request, res: Response) {
         sameSite: 'lax',
         httpOnly: true,
       })
-      .json({ message: 'logout success' });
+      .json({ status: 'success' });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: 'logout failed' });
+    return res.status(500).json({
+      status: 'fail',
+      errors: [{ code: 500, message: 'logout failed, please try again later' }],
+    });
   }
 }
