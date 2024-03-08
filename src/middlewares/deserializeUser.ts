@@ -6,9 +6,7 @@ export default function deserializeUser(
   res: Response,
   next: NextFunction,
 ) {
-  const accessToken = req.headers['x-access-token'] as string;
-
-  if (!accessToken) return next();
+  const accessToken = req.cookies.accessToken;
 
   if (!accessToken) return next();
 
@@ -18,7 +16,7 @@ export default function deserializeUser(
     return next();
   }
 
-  const refreshToken = req.headers['x-refresh-token'] as string;
+  const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return next();
 
   const { decoded: refreshTokenPayload } = verifyJwt(refreshToken);
