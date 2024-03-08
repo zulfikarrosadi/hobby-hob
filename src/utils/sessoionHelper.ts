@@ -18,8 +18,9 @@ export function createJwt(
 ) {
   const token = sign({ ...payload }, c.get('privateKay'), {
     ...(options && options),
-    algorithm: 'RS256',
+    algorithm: 'HS256',
   });
+
   return token;
 }
 
