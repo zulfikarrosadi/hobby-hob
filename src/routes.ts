@@ -41,7 +41,7 @@ export default function routes(app: Express) {
   app.use(deserializeUser);
   app.use(requireUser);
 
-  app.patch(
+  app.put(
     '/api/user/profile',
     validateInput(createUserProfileInputSchema),
     createUserProfileHandler,
