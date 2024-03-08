@@ -8,12 +8,17 @@ import cors from 'cors';
 const app = express();
 app.use(
   cors({
-    origin: ['http://127.0.0.1:5173', 'http://127.0.0.1:5500'],
+    origin: [
+      'http://127.0.0.1:5173',
+      'http://127.0.0.1:5500',
+      'http://localhost:5173',
+    ],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
       'Content-Type',
       'Set-Cookie',
       'Origin',
+      'Cookie',
       'X-Access-Token',
       'X-Refresh-Token',
       'x-access-token',
