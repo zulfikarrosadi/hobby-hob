@@ -47,13 +47,20 @@ export async function findHobbyByName({
   hobbyName,
 }: {
   hobbyName: string;
-}): Promise<{ id: number; name: string }> {
-  const result = await prisma.hobby.findFirst({
-    where: { name: { contains: hobbyName } },
-    select: { id: true, name: true },
-  });
-
-  return result;
+}): Promise<{ id: number; name: string } | Error> {
+  try {
+    const result = await prisma.hobby.findFirst({
+      where: { name: { contains: hobbyName } },
+      select: { id: true, name: true },
+    });
+    if (!result) {
+      throw new Error('hobby not found');
+    }
+    return { id: result.id, name: result.name };
+  } catch (error: any) {
+    console.log(error);
+    return new Error(error.message);
+  }
 }
 
 export async function getHobbyAndUser({
