@@ -74,7 +74,9 @@ export default function createSession({
 export function deleteSession(req: Request) {
   const { accessToken: token } = req.cookies;
   const { decoded: accessTokenPayload } = verifyJwt(token);
-
+  if (!accessTokenPayload) {
+    return '';
+  }
   accessTokenPayload.isValid = false;
   accessTokenPayload.email = null;
   accessTokenPayload.userId = null;
