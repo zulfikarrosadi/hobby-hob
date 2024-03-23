@@ -41,7 +41,7 @@ export default function routes(app: Express) {
   app.use(deserializeUser);
   app.use(requireUser);
 
-  app.put(
+  app.patch(
     '/api/user/profile',
     validateInput(createUserProfileInputSchema),
     createUserProfileHandler,
@@ -55,7 +55,7 @@ export default function routes(app: Express) {
   app.get('/api/hobbies/:cursor', getInfiniteHobbiesHandler);
   app.get('/api/hobbies/users/:hobbyId', getHobbyAndUserHandler);
   app.get(
-    '/api/hobbies/users/:hobbyName/:hobbyId/:userProfileId',
+    '/api/hobbies/users/:hobbyId/:userProfileId',
     getInfiniteHobbyAndUserHandler,
   );
 
