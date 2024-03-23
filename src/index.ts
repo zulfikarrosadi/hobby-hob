@@ -14,16 +14,7 @@ app.use(
       'http://localhost:5173',
     ],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: [
-      'Content-Type',
-      'Set-Cookie',
-      'Origin',
-      'Cookie',
-      'X-Access-Token',
-      'X-Refresh-Token',
-      'x-access-token',
-      'x-refresh-token',
-    ],
+    allowedHeaders: ['Content-Type', 'Set-Cookie', 'Origin', 'Cookie'],
     credentials: true,
   }),
 );
