@@ -101,7 +101,12 @@ export async function getUserProfile({
       UserHobby: {
         userId: number;
         hobbyId: number;
-        hobby: { id: number; name: string };
+        hobby: {
+          id: number;
+          name: string;
+          image: string;
+          description: string | null;
+        };
       }[];
     }
   | Error
@@ -110,7 +115,13 @@ export async function getUserProfile({
     const result = await prisma.userProfile.findFirst({
       where: { id: userProfileId },
       include: {
-        UserHobby: { include: { hobby: { select: { id: true, name: true } } } },
+        UserHobby: {
+          include: {
+            hobby: {
+              select: { id: true, name: true, image: true, description: true },
+            },
+          },
+        },
       },
     });
     if (result instanceof Error || !result) {
