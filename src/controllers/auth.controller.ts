@@ -55,7 +55,7 @@ export async function loginUserHandler(
     console.log(error);
     return res.status(400).json({
       status: 'fail',
-      errors: [{ code: 400, message: error.message }],
+      errors: { code: 400, message: error.message },
     });
   }
 }
@@ -84,7 +84,7 @@ export async function logOutUserHandler(
     console.log(error);
     return res.status(500).json({
       status: 'fail',
-      errors: [{ code: 500, message: 'logout failed, please try again later' }],
+      errors: { code: 500, message: 'logout failed, please try again later' },
     });
   }
 }
