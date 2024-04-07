@@ -1,10 +1,8 @@
 import { array, number, object, TypeOf } from 'zod';
 
 export const createUserHobbyInputSchema = object({
-  body: object({
-    hobbyId: array(
-      number({ required_error: 'You must choose at least one hobby' }),
-    ),
-  }),
+  hobbyId: array(
+    number({ required_error: 'You must choose at least one hobby' }),
+  ),
 });
 export type TCreateUserHobbyInput = TypeOf<typeof createUserHobbyInputSchema>;
