@@ -4,6 +4,7 @@ import { TLoginInput } from '../schemas/auth.schema';
 import { findUserByEmail } from '../services/auth.service';
 import createSession, { deleteSession } from '../utils/sessoionHelper';
 import GeneralResponse from '../schemas/responses.schema';
+import c from 'config';
 
 export async function loginUserHandler(
   req: Request<{}, {}, TLoginInput>,
