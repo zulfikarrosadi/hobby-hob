@@ -12,6 +12,7 @@ import {
   mapUserHoobiesInput,
   mappingUserHobbyResult,
 } from '../utils/hobbyHelper';
+import GeneralResponse from '../schemas/responses.schema';
 
 export async function getHobbiesHandler(
   req: Request<{}, {}, {}, { hobbyName: string }>,
