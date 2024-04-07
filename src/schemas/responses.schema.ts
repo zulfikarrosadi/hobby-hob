@@ -4,8 +4,11 @@ type GeneralResponse = {
   errors?: {
     message: string;
     code: number;
-    details?: any;
-  }[];
+    details?: {
+      message: string;
+      path: string;
+    }[];
+  };
 };
 
 export default GeneralResponse;
