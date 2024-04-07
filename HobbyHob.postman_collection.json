@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "6a769478-53a3-42de-b295-3dd81eb49241",
+		"_postman_id": "e678ae49-7fd7-4208-b676-09fd9c11c843",
 		"name": "HobbyHob",
 		"description": "API untuk manajemen hobby berbasis web\n\nFitur fitur utama\n\n1. Melakukan registrasi / login\n2. Meng-update user profile\n3. Mencari hobby hobby yang telah disediakan\n4. Melihat profile orang lain yang memiliki hobby yang sama dengan kita\n5. Menambahkan hobby hobby baru ke profile kita",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -433,104 +433,20 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{endpoint}}hobbies?hobbyName=skdoakd",
+							"raw": "{{endpoint}}hobbies",
 							"host": [
 								"{{endpoint}}hobbies"
 							],
 							"query": [
 								{
 									"key": "hobbyName",
-									"value": "skdoakd",
-									"description": "nama hobby yang ingin dicari"
+									"value": "Menulis",
+									"description": "nama hobby yang ingin dicari",
+									"disabled": true
 								}
 							]
 						},
 						"description": "Mengambil semua hobby yang ada, atau mencari hobby berdasarkan nama hobby\n\n##### Contoh response ketika request untuk mengambil semua hobby berhasil\n\n``` json\n{\n    \"message\": \"success\",\n    \"cursor\": \"jogging\",\n    \"data\": [\n        { \"id\": 1, \"name\": \"soccer\" },\n        { \"id\": 2, \"name\": \"jogging\" },\n    ]\n}\n\n```\n\n##### Contoh response ketika request untuk mengambil hobby berdasarkan nama berhasil\n\n``` json\n{\n    \"message\": \"success\",\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"soccer\"\n    }\n}\n\n```"
-					},
-					"response": []
-				},
-				{
-					"name": "Infinite User in Hobby",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"if (pm.response.code === 200) {\r",
-									"    const result = pm.response.json()\r",
-									"    pm.collectionVariables.set('hobbyIdCursor', result.data.cursor.hobbyId)\r",
-									"    pm.collectionVariables.set('userProfileIdCursor', result.data.cursor.userProfileId)\r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{endpoint}}hobbies/users/:hobbyId/:userProfileId",
-							"host": [
-								"{{endpoint}}hobbies"
-							],
-							"path": [
-								"users",
-								":hobbyId",
-								":userProfileId"
-							],
-							"variable": [
-								{
-									"key": "hobbyId",
-									"value": "{{hobbyIdCursor}}"
-								},
-								{
-									"key": "userProfileId",
-									"value": "19",
-									"type": "text",
-									"enabled": true,
-									"description": "merupakan id hobby yang didapatkan pada property `cursor`"
-								}
-							]
-						},
-						"description": "StartFragment\n\nData user dalam suatu hobby pasti akan berjumlah banyak, menampilkan semua data tersebut sekaligus bukanlah ide yang bagus\n\nAPI ini menyediakan endpoint untuk melakukan tindakan **Infinite Scrolling,** yaitu seiring user melakukan scrolling, maka akan ada data user baru yang diambil untuk ditampilkan\n\n##### Contoh hasil response ketika request berhasil\n\nEndFragment\n\n``` json\n{\n    \"message\": \"success\",\n    \"cursor\": {\n        \"hobbyId\": 1,\n        \"hobbyName\": \"soccer\",\n        \"userProfileId\" 50\n    },\n    \"data\": [\n        { \"id\": 51, \"username\": \"JhonDoe\" },\n        { \"id\": 52, \"username\": \"JaneDoe\" }\n    ]\n}\n\n```"
-					},
-					"response": []
-				},
-				{
-					"name": "Infinite Hobbies",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const response = pm.response.json()\r",
-									"pm.collectionVariables.set('hobbyCursor', response.data.cursor)"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{endpoint}}hobbies/:cursor",
-							"host": [
-								"{{endpoint}}hobbies"
-							],
-							"path": [
-								":cursor"
-							],
-							"variable": [
-								{
-									"key": "cursor",
-									"value": "{{hobbyCursor}}",
-									"description": "merupakan nama hobby yang didapatkan pada property `cursor`"
-								}
-							]
-						},
-						"description": "Hobby yang dimiliki website ini akan berjumlah ratusan hingga ribuan, menampilkan semua hobby sekaligus bukan ide yang bagus.\n\nAPI ini menyediakan endpoint untuk melakukan tindakan **Infinite Scrolling,** yaitu seiring user melakukan scrolling, maka akan ada data hobby baru yang diambil untuk ditampilkan\n\n##### Contoh hasil response ketika request berhasil\n\n``` json\n{\n    \"message\": \"success\",\n    \"cursor\": \"jogging\",\n    \"data\": [\n        { \"id\": 3, \"name\": \"netflix and chill\" },\n        { \"id\": 4, \"name\": \"reading\" },\n        { \"id\": 5, \"name\": \"swimming\" }\n    ]\n}\n\n```"
 					},
 					"response": []
 				},
@@ -576,13 +492,98 @@
 					"response": []
 				},
 				{
+					"name": "Infinite User in Hobby",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    const result = pm.response.json()\r",
+									"    pm.collectionVariables.set('hobbyIdCursor', result.data.cursor.hobbyId)\r",
+									"    pm.collectionVariables.set('userProfileIdCursor', result.data.cursor.userProfileId)\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}hobbies/users/:hobbyId/:userProfileId",
+							"host": [
+								"{{endpoint}}hobbies"
+							],
+							"path": [
+								"users",
+								":hobbyId",
+								":userProfileId"
+							],
+							"variable": [
+								{
+									"key": "hobbyId",
+									"value": "{{currentHobbyId}}"
+								},
+								{
+									"key": "userProfileId",
+									"value": "{{userProfileIdCursor}}",
+									"description": "merupakan id hobby yang didapatkan pada property `cursor`"
+								}
+							]
+						},
+						"description": "StartFragment\n\nData user dalam suatu hobby pasti akan berjumlah banyak, menampilkan semua data tersebut sekaligus bukanlah ide yang bagus\n\nAPI ini menyediakan endpoint untuk melakukan tindakan **Infinite Scrolling,** yaitu seiring user melakukan scrolling, maka akan ada data user baru yang diambil untuk ditampilkan\n\n##### Contoh hasil response ketika request berhasil\n\nEndFragment\n\n``` json\n{\n    \"message\": \"success\",\n    \"cursor\": {\n        \"hobbyId\": 1,\n        \"hobbyName\": \"soccer\",\n        \"userProfileId\" 50\n    },\n    \"data\": [\n        { \"id\": 51, \"username\": \"JhonDoe\" },\n        { \"id\": 52, \"username\": \"JaneDoe\" }\n    ]\n}\n\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Infinite Hobbies",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if(pm.response.status === 200) {\r",
+									"    const response = pm.response.json()\r",
+									"    pm.collectionVariables.set('hobbyCursor', response.data.cursor)\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}hobbies/:cursor",
+							"host": [
+								"{{endpoint}}hobbies"
+							],
+							"path": [
+								":cursor"
+							],
+							"variable": [
+								{
+									"key": "cursor",
+									"value": "{{hobbyCursor}}",
+									"description": "merupakan nama hobby yang didapatkan pada property `cursor`"
+								}
+							]
+						},
+						"description": "Hobby yang dimiliki website ini akan berjumlah ratusan hingga ribuan, menampilkan semua hobby sekaligus bukan ide yang bagus.\n\nAPI ini menyediakan endpoint untuk melakukan tindakan **Infinite Scrolling,** yaitu seiring user melakukan scrolling, maka akan ada data hobby baru yang diambil untuk ditampilkan\n\n##### Contoh hasil response ketika request berhasil\n\n``` json\n{\n    \"message\": \"success\",\n    \"cursor\": \"jogging\",\n    \"data\": [\n        { \"id\": 3, \"name\": \"netflix and chill\" },\n        { \"id\": 4, \"name\": \"reading\" },\n        { \"id\": 5, \"name\": \"swimming\" }\n    ]\n}\n\n```"
+					},
+					"response": []
+				},
+				{
 					"name": "Add User Hobby",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"hobbyId\": [10,90]\r\n}",
+							"raw": "{\r\n    \"hobbyId\": [10, 12, 1, 2, 4]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
