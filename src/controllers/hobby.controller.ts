@@ -8,10 +8,7 @@ import {
   getInfiniteHobbyAndUser,
   getUserAndHobby,
 } from '../services/hobby.service';
-import {
-  mapUserHoobiesInput,
-  mappingUserHobbyResult,
-} from '../utils/hobbyHelper';
+import { mapUserHoobiesInput } from '../utils/hobbyHelper';
 import GeneralResponse from '../schemas/responses.schema';
 
 export async function getHobbiesHandler(
