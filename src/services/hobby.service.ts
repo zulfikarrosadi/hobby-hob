@@ -20,7 +20,6 @@ export async function connectHobbiesToUser(
 export async function getHobbies(): Promise<{ id: number; name: string }[]> {
   const result = await prisma.hobby.findMany({
     select: { id: true, name: true, description: true, image: true },
-    orderBy: { name: 'asc' },
     take: 50,
   });
 
@@ -28,16 +27,15 @@ export async function getHobbies(): Promise<{ id: number; name: string }[]> {
 }
 
 export async function getInfiniteHobbies({
-  name,
+  id,
 }: {
-  name: string;
+  id: number;
 }): Promise<{ id: number; name: string }[]> {
   const result = await prisma.hobby.findMany({
-    cursor: { name },
+    cursor: { id },
     take: 50,
     skip: 1,
-    select: { id: true, name: true },
-    orderBy: { name: 'asc' },
+    select: { id: true, name: true, description: true, image: true },
   });
 
   return result;
@@ -47,18 +45,25 @@ export async function findHobbyByName({
   hobbyName,
 }: {
   hobbyName: string;
-}): Promise<{ id: number; name: string } | Error> {
+}): Promise<
+  | { id: number; name: string; description: string | null; image: string }
+  | Error
+> {
   try {
     const result = await prisma.hobby.findFirst({
       where: { name: { contains: hobbyName } },
-      select: { id: true, name: true },
+      select: { id: true, name: true, description: true, image: true },
     });
     if (!result) {
       throw new Error('hobby not found');
     }
-    return { id: result.id, name: result.name };
+    return {
+      id: result.id,
+      name: result.name,
+      description: result.description,
+      image: result.image,
+    };
   } catch (error: any) {
-    console.log(error);
     return new Error(error.message);
   }
 }
@@ -84,20 +89,26 @@ export async function getHobbyAndUser({
 }
 
 export async function getInfiniteHobbyAndUser({
-  hobbyName,
   userProfileId,
   hobbyId,
 }: {
-  hobbyName: string;
   userProfileId: number;
   hobbyId: number;
 }) {
   const result = await prisma.hobby.findFirst({
-    where: { name: hobbyName },
+    where: { id: hobbyId },
     include: {
       UserHobby: {
         select: {
-          user: { select: { id: true, username: true, sosmed: true } },
+          user: {
+            select: {
+              id: true,
+              username: true,
+              sosmed: true,
+              bio: true,
+              fullName: true,
+            },
+          },
         },
         cursor: { userId_hobbyId: { userId: userProfileId, hobbyId } },
         skip: 1,
@@ -107,7 +118,26 @@ export async function getInfiniteHobbyAndUser({
     },
   });
 
-  return result;
+  if (!result || result.UserHobby.length < 1) {
+    return new Error("that's the end of it");
+  }
+
+  return {
+    hobbyName: result.name,
+    hobbyId: result.id,
+    users: result.UserHobby.map((user) => ({
+      username: user.user.username,
+      id: user.user.id,
+      bio: user.user.bio ?? '',
+      fullName: user.user.fullName ?? '',
+      sosmed: {
+        instagram: user.user.sosmed?.instagram ?? '',
+        linkedin: user.user.sosmed?.linkedin ?? '',
+        tiktok: user.user.sosmed?.tiktok ?? '',
+        website: user.user.sosmed?.website ?? '',
+      },
+    })),
+  };
 }
 
 export async function getUserAndHobby(data: { id: number }) {
@@ -131,6 +161,28 @@ export async function getUserAndHobby(data: { id: number }) {
       },
     },
   });
+  if (!result || result?.UserHobby.length < 1) {
+    return new Error(
+      "mmmm... i guess there's no people that have this hobby yet",
+    );
+  }
 
-  return result;
+  return {
+    hobbyId: result.id,
+    hobbyName: result.name,
+    hobbyDescription: result.description,
+    hobbyImage: result.image,
+    users: result.UserHobby.map((user) => ({
+      username: user.user.username,
+      id: user.user.id,
+      bio: user.user.bio,
+      fullName: user.user.fullName ?? '',
+      sosmed: {
+        instagram: user.user.sosmed?.instagram ?? '',
+        linkedin: user.user.sosmed?.linkedin ?? '',
+        tiktok: user.user.sosmed?.tiktok ?? '',
+        website: user.user.sosmed?.website ?? '',
+      },
+    })),
+  };
 }
