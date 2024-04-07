@@ -2,10 +2,7 @@ import { compare } from 'bcrypt';
 import { Request, Response } from 'express';
 import { TLoginInput } from '../schemas/auth.schema';
 import { findUserByEmail } from '../services/auth.service';
-import createSession, {
-  deleteSession,
-  setExpiredDate,
-} from '../utils/sessoionHelper';
+import createSession, { deleteSession } from '../utils/sessoionHelper';
 import GeneralResponse from '../schemas/responses.schema';
 
 export async function loginUserHandler(
@@ -32,12 +29,14 @@ export async function loginUserHandler(
       httpOnly: true,
       sameSite: 'none',
       path: '/auth/refresh',
-      expires: setExpiredDate({ day: 15 }),
+      secure: true,
+      maxAge: c.get('refreshTokenTtl'),
     });
     res.cookie('accessToken', token.get('accessToken'), {
       httpOnly: true,
       sameSite: 'none',
-      expires: setExpiredDate({ hour: 1 }),
+      secure: true,
+      maxAge: c.get('accessTokenTtl'),
     });
 
     return res.status(200).json({
