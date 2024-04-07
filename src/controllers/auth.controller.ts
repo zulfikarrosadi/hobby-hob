@@ -9,7 +9,7 @@ import createSession, {
 import GeneralResponse from '../schemas/responses.schema';
 
 export async function loginUserHandler(
-  req: Request<{}, {}, TLoginInput['body']>,
+  req: Request<{}, {}, TLoginInput>,
   res: Response<GeneralResponse>,
 ) {
   const { email, password } = req.body;
