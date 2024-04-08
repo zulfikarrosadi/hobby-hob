@@ -42,11 +42,7 @@ export async function getBlogsInHobby(hobby: { id: number }) {
   return result;
 }
 
-export async function updateBlog(data: {
-  blog: Blog;
-  userProfileId: number;
-  hobbyId: number;
-}) {
+export async function updateBlog(data: { blog: Blog; userProfileId: number }) {
   const result = await prisma.blog.update({
     where: { id: data.blog.id, AND: { userId: data.userProfileId } },
     data: { title: data.blog.title, content: data.blog.content },
