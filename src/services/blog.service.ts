@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Blog, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -37,6 +37,19 @@ export async function getBlogsInHobby(hobby: { id: number }) {
         },
       },
     },
+  });
+
+  return result;
+}
+
+export async function updateBlog(data: {
+  blog: Blog;
+  userProfileId: number;
+  hobbyId: number;
+}) {
+  const result = await prisma.blog.update({
+    where: { id: data.blog.id, AND: { userId: data.userProfileId } },
+    data: { title: data.blog.title, content: data.blog.content },
   });
 
   return result;
