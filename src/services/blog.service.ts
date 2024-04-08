@@ -21,3 +21,23 @@ export async function createBlog(blog: {
   });
   return result;
 }
+
+export async function getBlogsInHobby(hobby: { id: number }) {
+  const result = await prisma.hobby.findFirst({
+    where: { id: hobby.id },
+    select: {
+      id: true,
+      Blog: {
+        take: 50,
+        select: {
+          id: true,
+          title: true,
+          content: true,
+          User: { select: { id: true, username: true } },
+        },
+      },
+    },
+  });
+
+  return result;
+}
