@@ -50,3 +50,14 @@ export async function updateBlog(data: { blog: Blog; userProfileId: number }) {
 
   return result;
 }
+
+export async function deleteBlog(data: {
+  blogId: number;
+  userProfileId: number;
+}) {
+  const result = await prisma.blog.delete({
+    where: { id: data.blogId, AND: { userId: data.userProfileId } },
+  });
+
+  return result;
+}
