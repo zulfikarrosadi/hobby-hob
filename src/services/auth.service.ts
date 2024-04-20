@@ -36,3 +36,12 @@ export async function saveTokenToDb(token: string, userId: number) {
     return Promise.reject(error);
   }
 }
+
+export async function getRefreshToken(userId: number) {
+  const refreshToken = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { refreshToken: true },
+  });
+
+  return refreshToken;
+}
