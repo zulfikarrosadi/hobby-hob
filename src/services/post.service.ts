@@ -2,7 +2,7 @@ import { Post, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export async function createPost(post: {
+export async function savePost(post: {
   content: string;
   userProfileId: number;
   hobbyId: number;
