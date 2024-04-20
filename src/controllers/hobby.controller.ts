@@ -29,10 +29,34 @@ export async function getHobbiesHandler(
       });
     }
     const hobbies = await getHobbies();
+    const finalData = hobbies.map((hobby) => {
+      return {
+        id: hobby.id,
+        name: hobby.name,
+        description: hobby.description,
+        image: hobby.image,
+        isJoined: hobby.UserHobby.map((user) => {
+          return {
+            id: user.user.id,
+            username: user.user.username,
+          };
+        }).reduce((_, curr) => {
+          return curr.id === res.locals.user.userProfileId;
+        }, false),
+        users: hobby.UserHobby.map((user) => {
+          return {
+            id: user.user.id,
+            username: user.user.username,
+          };
+        }).filter((user) => {
+          return user.id !== res.locals.user.userProfileId;
+        }),
+      };
+    });
 
     return res.status(200).json({
       status: 'success',
-      data: { cursor: hobbies[hobbies.length - 1].id, hobbies },
+      data: { cursor: hobbies[hobbies.length - 1].id, hobbies: finalData },
     });
   } catch (error) {
     console.log('catching error', error);
