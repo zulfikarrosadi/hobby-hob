@@ -18,3 +18,21 @@ export async function findUserByEmail({
 
   return user;
 }
+
+export async function saveTokenToDb(token: string, userId: number) {
+  try {
+    const res = await prisma.user.update({
+      where: { id: userId },
+      data: { refreshToken: token },
+      select: {
+        id: true,
+        email: true,
+        UserProfile: { select: { username: true, id: true } },
+      },
+    });
+    return res;
+  } catch (error) {
+    console.log('save_token_to_db', error);
+    return Promise.reject(error);
+  }
+}
