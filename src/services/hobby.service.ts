@@ -17,9 +17,28 @@ export async function connectHobbiesToUser(
   return result;
 }
 
-export async function getHobbies(): Promise<{ id: number; name: string }[]> {
+export async function getHobbies(): Promise<
+  {
+    id: number;
+    name: string;
+    description: string | null;
+    image: string;
+    UserHobby: {
+      user: {
+        id: number;
+        username: string;
+      };
+    }[];
+  }[]
+> {
   const result = await prisma.hobby.findMany({
-    select: { id: true, name: true, description: true, image: true },
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      image: true,
+      UserHobby: { select: { user: { select: { id: true, username: true } } } },
+    },
     take: 50,
   });
 
