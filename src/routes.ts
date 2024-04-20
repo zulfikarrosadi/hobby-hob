@@ -7,6 +7,7 @@ import {
 import {
   logOutUserHandler,
   loginUserHandler,
+  refreshToken,
 } from './controllers/auth.controller';
 import deserializeUser from './middlewares/deserializeUser';
 import requireUser from './middlewares/requireUser';
@@ -37,6 +38,7 @@ export default function routes(app: Express) {
     createUserHandler,
   );
   app.post('/api/login', validateInput(loginInputSchema), loginUserHandler);
+  app.get('/api/refresh', refreshToken);
 
   app.use(deserializeUser);
   app.use(requireUser);
