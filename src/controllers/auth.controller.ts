@@ -45,7 +45,7 @@ export async function loginUserHandler(
       data: {
         user: {
           email: user.email,
-          userId: user.id,
+          id: user.id,
           username: user.UserProfile[0].username,
           userProfileId: user.UserProfile[0].id,
         },
