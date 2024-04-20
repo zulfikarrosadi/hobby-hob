@@ -29,20 +29,16 @@ export async function getHobbiesHandler(
       });
     }
     const hobbies = await getHobbies();
+    console.log(res.locals.user);
     const finalData = hobbies.map((hobby) => {
       return {
         id: hobby.id,
         name: hobby.name,
         description: hobby.description,
         image: hobby.image,
-        isJoined: hobby.UserHobby.map((user) => {
-          return {
-            id: user.user.id,
-            username: user.user.username,
-          };
-        }).reduce((_, curr) => {
-          return curr.id === res.locals.user.userProfileId;
-        }, false),
+        isJoined: !!hobby.UserHobby.filter(
+          (v) => v.user.id === res.locals.user.userProfileId,
+        ).length,
         users: hobby.UserHobby.map((user) => {
           return {
             id: user.user.id,
