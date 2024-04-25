@@ -24,6 +24,7 @@ import {
   addHobbyToUserHandler,
   getHobbiesHandler,
   getHobbyAndUserHandler,
+  getHobbyByIdHandler,
   getInfiniteHobbiesHandler,
   getInfiniteHobbyAndUserHandler,
 } from './controllers/hobby.controller';
