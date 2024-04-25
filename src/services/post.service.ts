@@ -40,7 +40,10 @@ export async function getPostsInHobby(hobby: { id: number }) {
   return result;
 }
 
-export async function updatePost(data: { Post: Post; userProfileId: number }) {
+export async function updatePostById(data: {
+  Post: Omit<Post, 'userId'>;
+  userProfileId: number;
+}) {
   const result = await prisma.post.update({
     where: { id: data.Post.id, AND: { userId: data.userProfileId } },
     data: { content: data.Post.content },
