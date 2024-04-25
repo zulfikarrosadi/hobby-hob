@@ -28,6 +28,13 @@ import {
   getInfiniteHobbiesHandler,
   getInfiniteHobbyAndUserHandler,
 } from './controllers/hobby.controller';
+import {
+  createPost,
+  deletePost,
+  getPosts,
+  updatePost,
+} from './controllers/post.controller';
+import { createPostSchema, updatePostSchema } from './schemas/post.schema';
 
 export default function routes(app: Express) {
   app.get('/healthcheck', (req: Request, res: Response) => res.sendStatus(200));
@@ -62,6 +69,11 @@ export default function routes(app: Express) {
     '/api/hobbies/users/:hobbyId/:userProfileId',
     getInfiniteHobbyAndUserHandler,
   );
+
+  app.get('/api/hobbies/:hobbyId/posts', getPosts);
+  app.post('/api/posts', validateInput(createPostSchema), createPost);
+  app.put('/api/posts/:postId', validateInput(updatePostSchema), updatePost);
+  app.delete('/api/posts/:postId', deletePost);
 
   app.delete('/api/logout', logOutUserHandler);
   app.get('/api/user/:userProfileId', getUserProfileHandler);
