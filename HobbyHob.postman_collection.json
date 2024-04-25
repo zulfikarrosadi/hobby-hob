@@ -604,6 +604,384 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Post",
+			"item": [
+				{
+					"name": "Post",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if(pm.response.code === 200) {\r",
+									"    const res = pm.response.json()\r",
+									"    pm.collectionVariables.set(\"currentPostId\", res.data.post.id)\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\": \"{{$randomCatchPhrase}}\",\r\n    \"hobbyId\": {{currentHobbyId}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}posts",
+							"host": [
+								"{{endpoint}}posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post By Id",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\": \"{{$randomCatchPhrase}}\",\r\n    \"hobbyId\": {{currentHobbyId}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}posts/:postId",
+							"host": [
+								"{{endpoint}}posts"
+							],
+							"path": [
+								":postId"
+							],
+							"variable": [
+								{
+									"key": "postId",
+									"value": "{{currentPostId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post By Id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}posts/:postId",
+							"host": [
+								"{{endpoint}}posts"
+							],
+							"path": [
+								":postId"
+							],
+							"variable": [
+								{
+									"key": "postId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success Delete Post By Id",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{endpoint}}posts/:postId",
+									"host": [
+										"{{endpoint}}posts"
+									],
+									"path": [
+										":postId"
+									],
+									"variable": [
+										{
+											"key": "postId",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"a-bAsFyilMr4Ra1hIU5PyoyFRunpI\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 20 Apr 2024 14:54:28 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": null
+						},
+						{
+							"name": "Failed Delete Post By Id - Not Found",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{endpoint}}posts/:postId",
+									"host": [
+										"{{endpoint}}posts"
+									],
+									"path": [
+										":postId"
+									],
+									"variable": [
+										{
+											"key": "postId",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "91"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"5b-JQiPOaU2uLn9yf5wZzRcC71RzkA\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 20 Apr 2024 14:53:38 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"fail\",\n    \"errors\": {\n        \"code\": 400,\n        \"message\": \"failed to delete post, please try again\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Posts In Hobby",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}hobbies/:hobbyid/posts",
+							"host": [
+								"{{endpoint}}hobbies"
+							],
+							"path": [
+								":hobbyid",
+								"posts"
+							],
+							"variable": [
+								{
+									"key": "hobbyid",
+									"value": "{{currentHobbyId}}"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "No Post",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{endpoint}}hobbies/:hobbyid/posts",
+									"host": [
+										"{{endpoint}}hobbies"
+									],
+									"path": [
+										":hobbyid",
+										"posts"
+									],
+									"variable": [
+										{
+											"key": "hobbyid",
+											"value": "1",
+											"description": "hobby with no post"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "39"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"27-4C0tmsBxPxD0otVqfKXzbYK2MuM\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 20 Apr 2024 15:07:36 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"post\": []\n    }\n}"
+						},
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{endpoint}}hobbies/:hobbyid/posts",
+									"host": [
+										"{{endpoint}}hobbies"
+									],
+									"path": [
+										":hobbyid",
+										"posts"
+									],
+									"variable": [
+										{
+											"key": "hobbyid",
+											"value": "{{currentHobbyId}}"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "450"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1c2-frpD3aOzyrtwhmJE2fD4qG51Wg4\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 20 Apr 2024 15:08:42 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"post\": [\n            {\n                \"id\": 2,\n                \"content\": \"Realigned mission-critical hierarchy\",\n                \"User\": {\n                    \"id\": 55,\n                    \"username\": \"zaid_watermelon70\"\n                }\n            },\n            {\n                \"id\": 3,\n                \"content\": \"Phased leading edge methodology\",\n                \"User\": {\n                    \"id\": 55,\n                    \"username\": \"zaid_watermelon70\"\n                }\n            },\n            {\n                \"id\": 4,\n                \"content\": \"Exclusive zero defect functionalities\",\n                \"User\": {\n                    \"id\": 55,\n                    \"username\": \"zaid_watermelon70\"\n                }\n            },\n            {\n                \"id\": 5,\n                \"content\": \"Reduced holistic methodology\",\n                \"User\": {\n                    \"id\": 55,\n                    \"username\": \"zaid_watermelon70\"\n                }\n            }\n        ]\n    }\n}"
+						}
+					]
+				}
+			]
 		}
 	],
 	"event": [
@@ -678,6 +1056,11 @@
 		{
 			"key": "hobbyNameCuror",
 			"value": ""
+		},
+		{
+			"key": "currentPostId",
+			"value": "",
+			"type": "default"
 		}
 	]
 }
