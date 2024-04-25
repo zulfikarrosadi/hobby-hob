@@ -57,3 +57,46 @@ export async function createPost(
     });
   }
 }
+
+export async function updatePost(
+  req: Request<{ postId: string }, {}, UpdatePostSchema>,
+  res: Response<
+    ApiResponse,
+    { user: { userProfileId: number; userId: number } }
+  >,
+) {
+  const { hobbyId, content } = req.body;
+
+  try {
+    const updatedPost = await updatePostById({
+      Post: {
+        id: parseInt(req.params.postId, 10),
+        content: content,
+        hobbyId: hobbyId,
+      },
+      userProfileId: res.locals.user.userProfileId,
+    });
+
+    return res.status(200).json({
+      status: 'success',
+      data: {
+        post: {
+          id: updatedPost.id,
+          content: updatedPost.content,
+          hobbyId: updatedPost.hobbyId,
+        },
+      },
+    });
+  } catch (error) {
+    console.log('update_post_handler', error);
+    return res.status(400).json({
+      status: 'success',
+      errors: {
+        code: 400,
+        message:
+          'failed to update post, please try again and make sure you enter the correct data',
+      },
+    });
+  }
+}
+
