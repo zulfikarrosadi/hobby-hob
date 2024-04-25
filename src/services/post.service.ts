@@ -52,7 +52,7 @@ export async function updatePostById(data: {
   return result;
 }
 
-export async function deletePost(data: {
+export async function deletePostById(data: {
   PostId: number;
   userProfileId: number;
 }) {
