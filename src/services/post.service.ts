@@ -27,6 +27,7 @@ export async function getPostsInHobby(hobby: { id: number }) {
       id: true,
       Post: {
         take: 50,
+        orderBy: { createdAt: 'desc' },
         select: {
           id: true,
           content: true,
