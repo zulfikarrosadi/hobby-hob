@@ -54,6 +54,7 @@ export default function routes(app: Express) {
     addHobbyToUserHandler,
   );
   app.get('/api/hobbies', getHobbiesHandler);
+  app.get('/api/hobbies/:hobbyId', getHobbyByIdHandler);
   app.get('/api/hobbies/:cursor', getInfiniteHobbiesHandler);
   app.get('/api/hobbies/users/:hobbyId', getHobbyAndUserHandler);
   app.get(
