@@ -4,6 +4,7 @@ import {
   connectHobbiesToUser,
   findHobbyByName,
   getHobbies,
+  getHobbyById,
   getInfiniteHobbies,
   getInfiniteHobbyAndUser,
   getUserAndHobby,
@@ -181,6 +182,30 @@ export async function getHobbyAndUserHandler(
   } catch (error: any) {
     console.log(error);
 
+    return res
+      .status(404)
+      .json({ status: 'fail', errors: { code: 404, message: error.message } });
+  }
+}
+
+export async function getHobbyByIdHandler(
+  req: Request<{ hobbyId: string }>,
+  res: Response<GeneralResponse>,
+) {
+  const hobbyId = parseInt(req.params.hobbyId, 10);
+
+  try {
+    if (!hobbyId) {
+      throw new Error('hobby not found');
+    }
+    const hobby = await getHobbyById(hobbyId);
+    if (hobby instanceof Error) {
+      throw hobby;
+    }
+
+    return res.status(200).json({ status: 'success', data: { hobby } });
+  } catch (error: any) {
+    console.log('get_hobby_by_id_handler', error);
     return res
       .status(404)
       .json({ status: 'fail', errors: { code: 404, message: error.message } });
