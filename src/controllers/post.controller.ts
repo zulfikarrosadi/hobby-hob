@@ -38,7 +38,7 @@ export async function createPost(
   try {
     const post = await savePost({
       content: req.body.content,
-      hobbyId: parseInt(req.body.hobbyId, 10),
+      hobbyId: req.body.hobbyId,
       userProfileId: res.locals.user.userProfileId,
     });
     return res.status(200).json({
