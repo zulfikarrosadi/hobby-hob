@@ -16,21 +16,6 @@ export default function deserializeUser(
     return next();
   }
 
-  const refreshToken = req.cookies.refreshToken;
-  if (!refreshToken) return next();
-
-  const { decoded: refreshTokenPayload } = verifyJwt(refreshToken);
-  if (!refreshTokenPayload) return next();
-
-  const token = createSession({
-    email: refreshTokenPayload.email,
-    userId: refreshTokenPayload.userId,
-    userProfileId: refreshTokenPayload.userProfileId,
-  });
-  res.cookie('accessToken', token.get('accessToken'), {
-    httpOnly: true,
-    sameSite: 'lax',
-  });
-
+  res.locals.user = accessTokenPayload;
   return next();
 }
