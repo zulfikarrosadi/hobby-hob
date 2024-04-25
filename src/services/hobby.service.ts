@@ -205,3 +205,63 @@ export async function getUserAndHobby(data: { id: number }) {
     })),
   };
 }
+
+export async function getHobbyById(hobbyId: number): Promise<
+  | {
+      id: number;
+      name: string;
+      description: string | null;
+      image: string;
+      posts: {
+        id: number;
+        content: string;
+        createdAt: Date;
+        user: { userProfileId: number; username: string };
+      }[];
+    }
+  | Error
+> {
+  try {
+    const result = await prisma.hobby.findFirst({
+      where: { id: hobbyId },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        image: true,
+        Post: {
+          take: 100,
+          orderBy: { createdAt: 'desc' },
+          select: {
+            id: true,
+            content: true,
+            createdAt: true,
+            User: { select: { id: true, username: true } },
+          },
+        },
+      },
+    });
+    if (!result) {
+      throw new Error('hobby not found');
+    }
+    return {
+      id: result.id,
+      name: result.name,
+      description: result.description,
+      image: result.image,
+      posts: result.Post.map((post) => {
+        return {
+          id: post.id,
+          content: post.content,
+          createdAt: post.createdAt,
+          user: {
+            userProfileId: post.User.id,
+            username: post.User.username,
+          },
+        };
+      }),
+    };
+  } catch (error: any) {
+    return new Error(error.message);
+  }
+}
