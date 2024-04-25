@@ -100,3 +100,26 @@ export async function updatePost(
   }
 }
 
+export async function deletePost(
+  req: Request<{ postId: string }>,
+  res: Response<
+    ApiResponse,
+    { user: { userId: number; userProfileId: number } }
+  >,
+) {
+  try {
+    const deletedPost = await deletePostById({
+      PostId: parseInt(req.params.postId),
+      userProfileId: res.locals.user.userProfileId,
+    });
+    console.log(deletedPost);
+
+    return res.sendStatus(204);
+  } catch (error) {
+    console.log('delete_post_handler', error);
+    return res.status(400).json({
+      status: 'fail',
+      errors: { code: 400, message: 'failed to delete post, please try again' },
+    });
+  }
+}
