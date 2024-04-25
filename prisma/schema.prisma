@@ -60,12 +60,13 @@ model UserHobby {
 }
 
 model Post {
-  id      Int         @id @default(autoincrement()) @map("id")
-  content String      @map("content") @db.Text
-  userId  Int         @map("user_id")
-  hobbyId Int         @map("hobby_id")
-  User    UserProfile @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: Cascade)
-  Hobby   Hobby       @relation(fields: [hobbyId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  id        Int         @id @default(autoincrement()) @map("id")
+  content   String      @map("content") @db.Text
+  userId    Int         @map("user_id")
+  hobbyId   Int         @map("hobby_id")
+  createdAt DateTime    @default(now()) @map("created_at") @db.Timestamp()
+  User      UserProfile @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  Hobby     Hobby       @relation(fields: [hobbyId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   @@map("posts")
 }
