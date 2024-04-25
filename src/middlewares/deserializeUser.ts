@@ -7,12 +7,12 @@ export default function deserializeUser(
   next: NextFunction,
 ) {
   const accessToken = req.cookies.accessToken;
-
-  if (!accessToken) return next();
+  if (!accessToken) {
+    return next();
+  }
 
   const { decoded: accessTokenPayload } = verifyJwt(accessToken);
-  if (accessTokenPayload) {
-    res.locals.user = accessTokenPayload;
+  if (!accessTokenPayload) {
     return next();
   }
 
